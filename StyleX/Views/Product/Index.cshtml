@@ -1,263 +1,165 @@
 ﻿@{
     Layout = "_Layout";
+
 }
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Sản phẩm</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item active text-white">Sản phẩm</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+<!-- Fruits Shop Start-->
+<div class="container-fluid fruite py-2" id="appProduct">
+    <div class="row g-4">
+        <div class="col-lg-12">
+            <div class="row g-4 mb-3">
+                <div class="col-xl-3">
+                    <div class="input-group w-100 mx-auto d-flex">
+                        <input type="search" class="form-control p-2" style="font-size: 16px" placeholder="Nhập tên sản phẩm" aria-describedby="search-icon-1" v-model="nameProduct">
+                        <span v-on:click="GetProduct()" id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+                <div class="col-9"></div>
 
-<section class="ftco-section ftco-deal bg-primary" id="appProductSale" v-if="saleProducts">
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-6" style="min-height:230px">
-                <model-viewer class="w-100 h-100" alt="model"
-                              v-bind:src="saleProducts.modelUrl" v-bind:poster="saleProducts.posterUrl" ar shadow-intensity="1" camera-controls disable-pan
-                              disable-tap auto-rotate autoplay shadow-softness="0.1" min-camera-orbit="auto auto 100%"
-                              max-camera-orbit="auto auto 150%">
-                </model-viewer>
             </div>
-            <div class="col-md-6">
-                <div class="heading-section heading-section-white">
-                    <h2 class="mb-3">Giảm giá {{saleProducts.sale}}%</h2>
+            <div class="row g-4">
+                <div class="col-lg-9 col-sm-8">
+                    <div class="row g-4 justify-content-start">
+                        <div class="col-md-6 col-lg-6 col-xl-4" v-for="item in dataTable">
+                            <div class="rounded position-relative fruite-item">
+                                <a v-bind:href="'/product/detail/'+item.productID" class="fruite-img d-block">
+                                    <img v-bind:src="item.posterUrl" class="img-fluid w-100 rounded-top" alt="">
+                                </a>
+                                <div v-if="item.sale>0" class="text-white bg-danger px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">-{{item.sale}}%</div>
+                                <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                    <a v-bind:href="'/product/detail/'+item.productID">
+                                        <h4>{{item.name}}</h4>
+
+                                    </a>
+                                    <p>{{item.description}}</p>
+                                    <div class="d-flex justify-content-between flex-lg-wrap">
+                                        <p class="text-dark fs-5 fw-bold mb-0">{{Number(item.price - (item.price * item.sale / 100)).toLocaleString('en-US')}}&#8363; / {{item.unit}}</p>
+                                        <a href="javascript:void(0)" v-bind:onclick="'AddToCart('+item.productID+',1)'" class="btn border border-secondary rounded-pill px-3 text-primary ml-md-0 ml-1"><i class="fa fa-shopping-bag me-2 text-primary"></i> Thêm vào giỏ</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-                <div id="timer" class="d-flex mb-4">
-                    <div class="time" id="days"></div>
-                    <div class="time pl-4" id="hours"></div>
-                    <div class="time pl-4" id="minutes"></div>
-                    <div class="time pl-4" id="seconds"></div>
-                </div>
-                <div class="text-deal">
-                    <h2><a style="font-weight: 700; font-family:'Open Sans', Arial, sans-serif;" v-bind:href="'/product/detail/'+saleProducts.productID">{{saleProducts.name}}</a></h2>
-                    <p class="price">
-                        <span class="mr-2 price-dc">{{Number(saleProducts.price).toLocaleString("en-US")}}&#8363;</span><span class="price-sale">{{Number(saleProducts.price - (saleProducts.price*saleProducts.sale/100)).toLocaleString("en-US")}}&#8363;</span>
-                    </p>
-                    <ul class="thumb-deal d-flex mt-4">
-                        <li v-if="saleProducts.posterUrl" class="img" v-bind:style="{ 'background-image': 'url(' + saleProducts.posterUrl + ')' }"></li>
-                        <li v-if="saleProducts.posterDesignUrl1" class="img" v-bind:style="{ 'background-image': 'url(' + saleProducts.posterDesignUrl1 + ')' }"></li>
-                        <li v-if="saleProducts.posterDesignUrl2" class="img" v-bind:style="{ 'background-image': 'url(' + saleProducts.posterDesignUrl2 + ')' }"></li>
-                    </ul>
+
+                <div class="col-lg-3 col-sm-4" style="position:relative;">
+                    <div class="row g-4" style="position:fixed; overflow: auto; height: 700px">
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <h4>Danh mục</h4>
+                                <ul class="list-unstyled fruite-categorie">
+                                    <li v-on:click="GetProduct(0)">
+                                        <div class="d-flex justify-content-between fruite-name">
+                                            <a href="javascript:void(0)"><i class="fas fa-apple-alt me-2"></i>Tất cả</a>
+                                            <span></span>
+                                        </div>
+                                    </li>
+
+                                    <li v-on:click="GetProduct(1)">
+                                        <div class="d-flex justify-content-between fruite-name">
+                                            <a href="javascript:void(0)"><i class="fas fa-apple-alt me-2"></i>12312</a>
+                                            <span>12</span>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <h4 class="mb-3">Sản phẩm khuyến mại</h4>
+
+                            <div class="d-flex align-items-center justify-content-start">
+                                <a href="/product/detail" class="rounded me-4" style="width: 100px; height: 100px;">
+                                    <img src="" class="img-fluid rounded" alt="">
+                                </a>
+                                <div>
+                                    <a href="/product/detail/">
+                                        <h5 class="mb-2"></h5>
+
+                                    </a>
+
+                                    <div class="d-flex mb-2">
+                                        <h6 class="fw-bold me-2">24 &#8363;</h6>
+                                        <h6 class="text-danger text-decoration-line-through">123 &#8363;</h6>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="position-relative">
+                                <img src="/img/banner-fruits.jpg" class="img-fluid w-100 rounded" alt="">
+                                <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);">
+                                    <h3 class="text-secondary fw-bold">Món <br> Nhậu <br> Đặc <br> Sản</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="position-relative">
+                                <img src="/img/banner-fruits.jpg" class="img-fluid w-100 rounded" alt="">
+                                <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);">
+                                    <h3 class="text-secondary fw-bold">Món <br> Nhậu <br> Đặc <br> Sản</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
-
-
-<section class="ftco-section bg-light" id="appProduct" style="padding-top: 8rem;">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-lg-2">
-                <div class="sidebar">
-                    <div class="sidebar-box-2">
-                        <h2 class="heading">Danh mục</h2>
-                        <div class="fancy-collapse-panel">
-                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab">
-                                        <h4 class="panel-title">
-                                            <span style="font-size: 16px; cursor: pointer;font-weight:500;" class="cates" cate-value="0" v-on:click="HandleItemCate(0)">
-                                                Tất cả
-                                            </span>
-                                        </h4>
-                                    </div>
-                                </div>
-                                <div class="panel panel-default" v-for="(item,index) in categories">
-                                    <div class="panel-heading" role="tab">
-                                        <h4 class="panel-title">
-                                            <span style="font-size: 16px; cursor: pointer;font-weight:500;" class="cates" v-bind:cate-value="item.categoryID" v-on:click="HandleItemCate(item.categoryID)">
-                                                {{item.name}}
-                                            </span>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-box-2">
-                        <h2 class="heading">Tìm kiếm</h2>
-                        <div class="colorlib-form-2">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Tên sản phẩm:</label>
-                                        <div class="form-field">
-                                            <input v-model="nameProduct" class="form-control" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Giảm giá:</label>
-                                        <div class="form-field">
-                                            <select class="form-control" v-model="sale">
-                                                <option value="0">Tất cả</option>
-                                                <option value="1">Có</option>
-                                                <option value="2">Không</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <button class="btn btn-success" v-on:click="SearchProduct()">Tìm kiếm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-8 col-lg-10">
-                <div class="row">
-                    <div v-if="isLoad" class="col-12 d-flex justify-content-center">
-                        <i class="fa-solid fa-spinner fa-spin-pulse" style="font-size: 50px; width:50px; height:50px"></i>
-                    </div>
-                    <div v-if="!isLoad" class="col-sm-12 col-md-12 col-lg-4 d-flex shadow rounded mt-2" v-for="item in dataTable">
-                        <div class="product d-flex flex-column">
-                            <a v-bind:href="'/product/detail/'+item.productID" class="img-prod d-flex justify-content-center align-content-center">
-                                <img style="height: 290px" v-bind:src="item.posterUrl"
-                                     alt="Colorlib Template">
-                                <div class="overlay"></div>
-                            </a>
-                            <div class="text py-3 pb-4 px-3">
-                                <div class="d-flex">
-                                    <div class="cat">
-                                        <span>{{item.categoryName}}</span>
-                                    </div>
-                                </div>
-                                <h3 style="height: 42px;"><a v-bind:href="'/product/detail/'+item.productID">{{item.name}}</a></h3>
-                                <div class="pricing">
-                                    <p class="price"><span>{{Number(item.price).toLocaleString("en-US")}}&#8363;</span> <span style="font-size:14px;" class="text-danger" v-if="item.sale>0 && new Date(item.saleEndAt) > new Date()">(-{{item.sale}}%)</span></p>
-                                </div>
-                                <div class="d-flex justify-content-left mt-2">
-                                    <a v-bind:href="'/product/detail/'+item.productID" style="width:110px" class="btn btn-info mx-1 my-1">Xem chi tiết</a>
-                                </div>
-                                <p class="bottom-area d-flex px-3">
-                                    <a href="javascript:;" class="buy-now text-center py-2" v-bind:onClick="'DesignNow('+item.productID+')'">
-                                        <span>
-                                            Thiết kế  <i class="ion-ios-cart ml-1"></i>
-                                        </span>
-                                    </a>
-                                    <a href="javascript:;" class="add-to-cart text-center py-2 mr-1" v-bind:onClick="'AddToCart('+item.productID+')'">
-                                        <span>
-                                            Thêm vào giỏ <i class="ion-ios-add ml-1"></i>
-                                        </span>
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="d-flex justify-content-center mt-5" id="div-pagination">
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-
+</div>
+<!-- Fruits Shop End-->
 @section Scripts {
     <script>
         var appProduct = new Vue({
             el: "#appProduct",
             data: {
-                categories: [],
-                isLoad: true,
-                resData: [],
                 dataTable: [],
-                totalPages: 1,
+                sort: 0,
+                isLoad: true,
+                nameProduct: "@Html.Raw(ViewBag.nameProduct)",
+                page: 1,
                 pageSize: 9,
-                nameProduct: "",
-                sale: 0,
-                categoryID: 0
+                totalPages: 1,
+                categoryID: @Html.Raw(ViewBag.categoryID)
 
-
-
-            },
+                    },
             methods: {
                 init: async function () {
 
-                    await this.GetCategory();
-                    await this.SearchProduct(0);
-
+                    await this.GetProduct();
                     this.$forceUpdate();
                 },
-                GetCategory: async function () {
+                GetProduct: async function (cID) {
                     var self = this;
-                    self.categories = [];
 
-                    $.ajax({
-                        type: "POST",
-                        contentType: "application/json; charset=utf-8",
-                        url: "/Home/GetCategories",
-                        data: JSON.stringify({
-                        }),
-                        success: function (res) {
-                            if (res.status == 1) {
-                                self.categories = res.data;
-                                console.log(self.categories)
-                            }
-                            else {
-                                ShowAlert(res.message, "danger");
-                            }
-                        },
-                        error: function (error) {
-                            ShowAlert(error.responseJSON.message, "danger");
-                        }
-                    });
+                    if (cID || cID == 0) self.categoryID = cID;
 
-                },
-                HandleItemCate: async function (categoryID) {
-                    var cates = Array.from(document.querySelectorAll('.cates'))
-                    cates.forEach(e => {
-                        if (e.getAttribute('cate-value') == categoryID) {
-                            e.style.color = "#86c9ef";
-                        } else {
-                            e.style.color = "#000000";
-                        }
-                    });
-                    this.categoryID = categoryID;
-                    await this.SearchProduct();
 
-                },
-                SearchProduct: async function () {
-                    var self = this;
                     self.isLoad = true;
                     self.dataTable = [];
 
                     $.ajax({
                         type: "POST",
                         contentType: "application/json; charset=utf-8",
-                        url: "product/GetProducts",
+                        url: "/product/GetProducts",
                         data: JSON.stringify({
-                            categoryID: self.categoryID,
-                            nameProduct: self.nameProduct,
-                            sale: self.sale
+                            sort: self.sort, nameProduct: self.nameProduct, page: self.page, pageSize: self.pageSize, categoryID: self.categoryID
                         }),
                         success: function (res) {
                             self.isLoad = false;
                             if (res.status == 1) {
-                                console.log(res.data);
-
-                                self.resData = res.data;
-                                self.dataTable = self.resData.slice(0, self.pageSize);
-                                self.totalPages = Math.ceil(self.resData.length / self.pageSize);
-                                if (self.resData.length > 0) {
-                                    document.getElementById("div-pagination").innerHTML = `<ul id="pagination" class="pagination-md"></ul>`;
-
-                                    $('#pagination').twbsPagination({
-                                        totalPages: self.totalPages,
-                                        visiblePages: 6,
-                                        first: "Trang đầu",
-                                        last: "Trang cuối",
-                                        next: 'Trang tiếp',
-                                        prev: 'Trang trước',
-                                        onPageClick: function (event, page) {
-                                            var start = (page - 1) * self.pageSize;
-                                            var end = page * self.pageSize;
-                                            self.dataTable = self.resData.slice(start, end);
-                                        }
-                                    });
-                                }
-
+                                self.dataTable = res.data;
 
                             }
                             else {
@@ -266,97 +168,11 @@
                         },
                         error: function (xhr, status, error) {
                             self.isLoad = false;
-                            ShowAlert(error.responseJSON.message, "danger");
-                        }
-                    });
-                }
-
-
-
-            },
-            mounted() {
-                this.init();
-            },
-        });
-        var appProductSale = new Vue({
-            el: "#appProductSale",
-            data: {
-                saleProducts: {},
-            },
-            methods: {
-                init: async function () {
-
-                    await this.GetProductHomes();
-                    window.addEventListener('load', (e) => {
-                        var allModels = Array.from(document.querySelectorAll('model-viewer'));
-
-                        allModels.forEach((md) => {
-                            md.addEventListener('load', (elm) => {
-                                for (var m of elm.target.model.materials) {
-                                    m.setAlphaMode("OPAQUE");
-                                }
-                            });
-
-                        });
-                    });
-
-                    this.$forceUpdate();
-                },
-                GetProductHomes: async function () {
-                    var self = this;
-                    self.saleProducts = {};
-                    $.ajax({
-                        type: "POST",
-                        contentType: "application/json; charset=utf-8",
-                        url: "/Home/GetProductHomes",
-                        data: JSON.stringify({
-                        }),
-                        success: function (res) {
-                            if (res.status == 1) {
-                                console.log(res.data)
-                                self.saleProducts = res.data.saleProducts;
-
-                                if (self.saleProducts) {
-                                    setInterval(function () { self.MakerTime(self.saleProducts.saleEndAt) }, 1000);
-                                }
-
-                            }
-                            else {
-                                ShowAlert(res.message, "danger");
-                            }
-                        },
-                        error: function (error) {
-                            ShowAlert(error.responseJSON.message, "danger");
+                            ShowAlert(error, "danger");
                         }
                     });
 
                 },
-                MakerTime: function (date) {
-
-                    var endTime = new Date(date);
-                    endTime = (Date.parse(endTime) / 1000);
-
-                    var now = new Date();
-                    now = (Date.parse(now) / 1000);
-
-                    var timeLeft = endTime - now;
-
-                    var days = Math.floor(timeLeft / 86400);
-                    var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
-                    var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600)) / 60);
-                    var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
-
-                    if (hours < "10") { hours = "0" + hours; }
-                    if (minutes < "10") { minutes = "0" + minutes; }
-                    if (seconds < "10") { seconds = "0" + seconds; }
-
-                    $("#days").html(days + "<span>Ngày</span>");
-                    $("#hours").html(hours + "<span>Giờ</span>");
-                    $("#minutes").html(minutes + "<span>Phút</span>");
-                    $("#seconds").html(seconds + "<span>Giây</span>");
-
-                },
-
 
             },
             mounted() {

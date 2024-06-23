@@ -21,7 +21,6 @@ namespace StyleX.DTOs
         public string ProductPartNameCustom { get; set; } = string.Empty;
         public bool IsDefault { get; set; } = false;
         public string NameMaterialDefault { get; set; } = string.Empty;
-        public List<Material> materials { get; set; } = new List<Material>();
 
     }
     public class AddProductModel

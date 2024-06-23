@@ -23,11 +23,7 @@ namespace StyleX.Controllers
         {
             await HttpContext.SignOutAsync(Common.CookieAuthAdmin);
 
-            ViewBag.Title = "StyleXCMS - Đăng nhập";
-
-            //ClaimsPrincipal claimsPrincipal = HttpContext.User;
-            //if (claimsPrincipal.Identity != null && claimsPrincipal.Identity.IsAuthenticated)
-            //    return RedirectToAction("Index", "Admin");
+            ViewBag.Title = "CMS - Đăng nhập";
 
             return View();
 

@@ -76,7 +76,35 @@ namespace StyleX.Migrations
                     b.ToTable("Account");
                 });
 
-            modelBuilder.Entity("StyleX.Models.CartItem", b =>
+            modelBuilder.Entity("StyleX.Models.Order", b =>
+                {
+                    b.Property<int>("OrderID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"), 1L, 1);
+
+                    b.Property<double>("BasePrice")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("NetPrice")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("OrderID");
+
+                    b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("StyleX.Models.OrderProduct", b =>
                 {
                     b.Property<int>("CartItemID")
                         .ValueGeneratedOnAdd()
@@ -84,18 +112,11 @@ namespace StyleX.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemID"), 1L, 1);
 
-                    b.Property<int>("AccountID")
-                        .HasColumnType("int");
-
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderID")
+                    b.Property<int>("OrderID")
                         .HasColumnType("int");
-
-                    b.Property<string>("PosterUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -106,239 +127,13 @@ namespace StyleX.Migrations
                     b.Property<double>("Sale")
                         .HasColumnType("float");
 
-                    b.Property<string>("Size")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.HasKey("CartItemID");
-
-                    b.HasIndex("AccountID");
 
                     b.HasIndex("OrderID");
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("CartItem");
-                });
-
-            modelBuilder.Entity("StyleX.Models.Category", b =>
-                {
-                    b.Property<int>("CategoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryID"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CategoryID");
-
-                    b.ToTable("Category");
-                });
-
-            modelBuilder.Entity("StyleX.Models.DecalInfo", b =>
-                {
-                    b.Property<int>("DecalInfoID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DecalInfoID"), 1L, 1);
-
-                    b.Property<int>("CartItemID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MeshUuid")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("OrientationX")
-                        .HasColumnType("float");
-
-                    b.Property<double>("OrientationY")
-                        .HasColumnType("float");
-
-                    b.Property<double>("OrientationZ")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PositionX")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PositionY")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PositionZ")
-                        .HasColumnType("float");
-
-                    b.Property<int>("RenderOrder")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Size")
-                        .HasColumnType("float");
-
-                    b.HasKey("DecalInfoID");
-
-                    b.HasIndex("CartItemID");
-
-                    b.ToTable("DecalInfo");
-                });
-
-            modelBuilder.Entity("StyleX.Models.DesignInfo", b =>
-                {
-                    b.Property<int>("DesignInfoID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DesignInfoID"), 1L, 1);
-
-                    b.Property<string>("AoMap")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CartItemID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DesignName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageTexture")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetalnessMap")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameMaterial")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalMap")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoughnessMap")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("TextureScale")
-                        .HasColumnType("float");
-
-                    b.HasKey("DesignInfoID");
-
-                    b.HasIndex("CartItemID");
-
-                    b.ToTable("DesignInfo");
-                });
-
-            modelBuilder.Entity("StyleX.Models.Material", b =>
-                {
-                    b.Property<int>("MaterialID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaterialID"), 1L, 1);
-
-                    b.Property<string>("AoMap")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDecal")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MetalnessMap")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalMap")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoughnessMap")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MaterialID");
-
-                    b.ToTable("Material");
-                });
-
-            modelBuilder.Entity("StyleX.Models.Order", b =>
-                {
-                    b.Property<int>("OrderID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"), 1L, 1);
-
-                    b.Property<int>("AccountID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("BasePrice")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("NetPrice")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PercentSale")
-                        .HasColumnType("float");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<double>("TransportFee")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("OrderID");
-
-                    b.HasIndex("AccountID");
-
-                    b.ToTable("Order");
+                    b.ToTable("OrderProduct");
                 });
 
             modelBuilder.Entity("StyleX.Models.Product", b =>
@@ -348,9 +143,6 @@ namespace StyleX.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductID"), 1L, 1);
-
-                    b.Property<int>("CategoryID")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
@@ -382,281 +174,29 @@ namespace StyleX.Migrations
                     b.Property<double>("Sale")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("SaleEndAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
                     b.HasKey("ProductID");
 
-                    b.HasIndex("CategoryID");
-
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("StyleX.Models.ProductSetting", b =>
+            modelBuilder.Entity("StyleX.Models.OrderProduct", b =>
                 {
-                    b.Property<int>("ProductSettingID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductSettingID"), 1L, 1);
-
-                    b.Property<string>("AoMap")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MetalnessMap")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameMaterialDefault")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalMap")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProductPartNameCustom")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductPartNameDefault")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoughnessMap")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ProductSettingID");
-
-                    b.HasIndex("ProductID");
-
-                    b.ToTable("ProductSetting");
-                });
-
-            modelBuilder.Entity("StyleX.Models.ProductSettingMaterial", b =>
-                {
-                    b.Property<int>("ProductSettingMaterialID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductSettingMaterialID"), 1L, 1);
-
-                    b.Property<int>("MaterialID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductSettingID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductSettingMaterialID");
-
-                    b.HasIndex("MaterialID");
-
-                    b.HasIndex("ProductSettingID");
-
-                    b.ToTable("ProductSettingMaterial");
-                });
-
-            modelBuilder.Entity("StyleX.Models.Promotion", b =>
-                {
-                    b.Property<int>("PromotionID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PromotionID"), 1L, 1);
-
-                    b.Property<int>("AccountID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ExpiredAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OrderID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ResultSpin")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UsedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("PromotionID");
-
-                    b.HasIndex("AccountID");
-
-                    b.HasIndex("OrderID");
-
-                    b.ToTable("Promotion");
-                });
-
-            modelBuilder.Entity("StyleX.Models.Warehouse", b =>
-                {
-                    b.Property<int>("WarehouseID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WarehouseID"), 1L, 1);
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Size")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("WarehouseID");
-
-                    b.HasIndex("ProductID");
-
-                    b.ToTable("Warehouse");
-                });
-
-            modelBuilder.Entity("StyleX.Models.CartItem", b =>
-                {
-                    b.HasOne("StyleX.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("StyleX.Models.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("OrderID");
+                        .HasForeignKey("OrderID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("StyleX.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Account");
 
                     b.Navigation("Order");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("StyleX.Models.DecalInfo", b =>
-                {
-                    b.HasOne("StyleX.Models.CartItem", "CartItem")
-                        .WithMany()
-                        .HasForeignKey("CartItemID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CartItem");
-                });
-
-            modelBuilder.Entity("StyleX.Models.DesignInfo", b =>
-                {
-                    b.HasOne("StyleX.Models.CartItem", "CartItem")
-                        .WithMany()
-                        .HasForeignKey("CartItemID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CartItem");
-                });
-
-            modelBuilder.Entity("StyleX.Models.Order", b =>
-                {
-                    b.HasOne("StyleX.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
-            modelBuilder.Entity("StyleX.Models.Product", b =>
-                {
-                    b.HasOne("StyleX.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("StyleX.Models.ProductSetting", b =>
-                {
-                    b.HasOne("StyleX.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("StyleX.Models.ProductSettingMaterial", b =>
-                {
-                    b.HasOne("StyleX.Models.Material", "Material")
-                        .WithMany()
-                        .HasForeignKey("MaterialID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StyleX.Models.ProductSetting", "ProductSetting")
-                        .WithMany()
-                        .HasForeignKey("ProductSettingID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Material");
-
-                    b.Navigation("ProductSetting");
-                });
-
-            modelBuilder.Entity("StyleX.Models.Promotion", b =>
-                {
-                    b.HasOne("StyleX.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StyleX.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderID");
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("StyleX.Models.Warehouse", b =>
-                {
-                    b.HasOne("StyleX.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Product");
                 });

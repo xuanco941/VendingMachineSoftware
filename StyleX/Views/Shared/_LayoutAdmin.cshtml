@@ -21,12 +21,34 @@
     <link href="/admin/css/admin.min.css" rel="stylesheet">
     <style>
 
-        body{
+        body {
             font-size: 15px !important;
         }
+
+            body::-webkit-scrollbar {
+                width: 9px; /* Độ rộng thanh cuộn*/
+                height: 5px;
+            }
+
+        ::-webkit-scrollbar {
+            width: 5px; /* Độ rộng thanh cuộn*/
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--text-color-component); /* Màu nền của thanh cuộn */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #453a5c; /* Màu của thanh cuộn */
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #716191; /* Màu khi di chuột qua thanh cuộn */
+            }
     </style>
-    
- 
+
+
 </head>
 
 <body id="page-top">
@@ -59,46 +81,16 @@
                 <hr class="sidebar-divider">
 
             </li>
-
-
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne"
-                   aria-expanded="true" aria-controls="collapseTwo">
+                <a class="nav-link" href="/admin/product">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Quản lý sản phẩm</span>
                 </a>
-                <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="/admin/product">Sản phẩm</a>
-                        <a class="collapse-item" href="/admin/warehouse">Kho sản phẩm</a>
-                        <a class="collapse-item" href="/admin/material">Chất liệu sản phẩm</a>
-                        <a class="collapse-item" href="/admin/category">Danh mục sản phẩm</a>
-
-                    </div>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                   aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Chương trình ưu đãi</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="/admin/promotion">Phiếu giảm giá đơn hàng</a>
-                    </div>
-                </div>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/admin/order">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Quản lý đơn hàng</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/account">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Quản lý tài khoản</span>
                 </a>
             </li>
 
@@ -186,9 +178,9 @@
         function ShowAlert(html, type) {
             var alertBox = document.querySelector('#alertBox');
             var alert = `<div class="alert alert-${type} alert-dismissible" role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            ${html}
-                                        </div>`;
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    ${html}
+                                                </div>`;
 
             if (timeoutAlertID) {
                 alertBox.innerHTML = '';

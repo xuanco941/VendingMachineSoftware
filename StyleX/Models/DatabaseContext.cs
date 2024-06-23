@@ -10,17 +10,9 @@ namespace StyleX.Models
         private readonly IConfiguration _configuration;
 
         public DbSet<Account> Accounts { get; set; } = null!;
-        public DbSet<Category> Categories { get; set; } = null!;
-        public DbSet<Material> Materials { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
-        public DbSet<CartItem> CartItems { get; set; } = null!;
-        public DbSet<DesignInfo> DesignInfos { get; set; } = null!;
         public DbSet<Product> Products { get; set; } = null!;
-        public DbSet<Promotion> Promotions { get; set; } = null!;
-        public DbSet<Warehouse> Warehouses { get; set; } = null!;
-        public DbSet<ProductSettingMaterial> ProductSettingMaterials { get; set; } = null!;
-        public DbSet<ProductSetting> ProductSettings { get; set; } = null!;
-        public DbSet<DecalInfo> DecalInfos { get; set; } = null!;
+        public DbSet<OrderProduct> OrderProducts { get; set; } = null!; 
 
 
 
