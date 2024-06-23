@@ -1,0 +1,282 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập quản trị</title>
+    <link rel="icon" href="/logo/stylex-high-resolution-logo.ico" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <style>
+        .linkSignup {
+            color: #2c9fdf;
+            display: inline-block;
+            text-decoration: none;
+            font-weight: 400;
+        }
+
+        .wrapper {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            height: 100vh;
+            padding: 20px;
+            background-image: linear-gradient(180deg, #2c9fdf 0%, #86c9ef 70%);
+        }
+
+        #formContent {
+            border-radius: 10px 10px 10px 10px;
+            background: #fff;
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            padding: 0px;
+            box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        #formFooter {
+            background-color: #f6f6f6;
+            border-top: 1px solid #dce8f1;
+            padding: 25px;
+            text-align: center;
+            border-radius: 0 0 10px 10px;
+        }
+
+
+
+        /* TABS */
+
+        h2.inactive {
+            color: #cccccc;
+        }
+
+        h2.active {
+            color: #0d0d0d;
+            border-bottom: 2px solid #2c9fdf;
+        }
+
+
+
+        /* FORM TYPOGRAPHY*/
+
+        .fourth {
+            background-color: #2c9fdf;
+            border: none;
+            color: white;
+            padding: 15px 80px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            text-transform: uppercase;
+            font-size: 13px;
+            box-shadow: 0 10px 30px 0 rgba(95, 186, 233, 0.4);
+            border-radius: 5px 5px 5px 5px;
+            margin: 5px 20px 40px 20px;
+            transition: all 0.3s ease-in-out;
+        }
+
+            .fourth:hover {
+                background-color: #86c9ef;
+            }
+
+            .fourth:active {
+                transform: scale(0.95);
+            }
+
+        .inputLogin {
+            background-color: #f6f6f6;
+            border: none;
+            color: #0d0d0d;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 5px;
+            width: 85%;
+            border: 2px solid #f6f6f6;
+            transition: all 0.5s ease-in-out;
+            border-radius: 5px 5px 5px 5px;
+        }
+
+            .inputLogin:focus {
+                background-color: #fff;
+                border-bottom: 2px solid #2c9fdf;
+            }
+
+
+        /* Simple CSS3 Fade-in Animation */
+        .underlineHover:after {
+            display: block;
+            left: 0;
+            bottom: -10px;
+            width: 0;
+            height: 2px;
+            background-color: #2c9fdf;
+            content: "";
+            transition: width 0.2s;
+        }
+
+        .underlineHover:hover {
+            color: #0d0d0d;
+        }
+
+            .underlineHover:hover:after {
+                width: 100%;
+            }
+
+        .inputLogin:focus {
+            outline: none;
+        }
+    </style>
+    <div class="wrapper" id="appLogin" style="background-image: url('/admin/img/bg.jpg'); background-size:cover;">
+        <div id="formContent" class="pb-4">
+            <!-- Icon -->
+            <div class=" first mt-3 mb-4">
+                <div style="font-size: 35px; font-family:'Berlin Sans FB'; color: black; font-weight: 500">StyleX CMS</div>
+            </div>
+
+            <!-- Login Form -->
+            <div>
+                <input v-model="dataLogin.email" type="text" class="second inputLogin" name="email" placeholder="Tài khoản">
+                <div class="text-danger" style="font-size:14px;">{{dataLogin.messageEmail}}</div>
+                <input v-model="dataLogin.password" type="password" class="third inputLogin" name="password"
+                       placeholder="Mật khẩu" autocomplete="on">
+                <div class="text-danger" style="font-size:14px;">{{dataLogin.messagePassword}}</div>
+                <button v-if="dataLogin.isLoad==false" type="button" v-on:click="logIn()" class="fourth mt-4 mb-3">Đăng nhập</button>
+                <button v-if="dataLogin.isLoad" type="button" class="fourth mt-4 mb-3"><i class="fa-solid fa-spinner fa-spin-pulse"></i></button>
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <div id="alertBox" style="max-width: 400px; position:fixed; bottom: 15px; right: 20px; margin: 0px; opacity: 0.95; z-index: 555; padding: 15px 20px; font-size: 17px;">
+    </div>
+</body>
+
+</html>
+
+
+
+<script>
+    var timeoutAlertID;
+    function ShowAlert(html, type) {
+        var alertBox = document.querySelector('#alertBox');
+        var alert = `<div class="alert alert-${type} alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    ${html}
+                                </div>`;
+
+        if (timeoutAlertID) {
+            alertBox.innerHTML = '';
+            clearTimeout(timeoutAlertID);
+        }
+
+        alertBox.innerHTML = alert;
+        timeoutAlertID = setTimeout(function () {
+            alertBox.innerHTML = '';
+        }, 3500);
+    };
+
+</script>
+
+<script src="/library/js/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+<script>
+    var appLogin = new Vue({
+        el: "#appLogin",
+        data: {
+            dataLogin: {
+                email: '',
+                password: '',
+                messageEmail: '',
+                messagePassword: '',
+                isLoad: false
+            },
+        
+            isActive: '@ViewBag.IsActive'
+        },
+        methods: {
+            init: async function () {
+                if (this.isActive == '1') {
+                    this.dataLogin.email = "@ViewBag.email";
+                    this.dataLogin.password = "@ViewBag.password";
+                    ShowAlert("Kích hoạt tài khoản thành công.", "success");
+                }
+                this.$forceUpdate();
+
+            },
+            changeForm: function () {
+                this.isLogin = !this.isLogin;
+            },
+            logIn: async function () {
+                var self = this;
+
+                if (!self.dataLogin.email) {
+                    self.dataLogin.messageEmail = "Tài khoản không hợp lệ, vui lòng thử lại.";
+                    return;
+                }
+                else {
+                    self.dataLogin.messageEmail = "";
+                }
+                if (!self.dataLogin.password) {
+                    self.dataLogin.messagePassword = "Mật khẩu không hợp lệ, vui lòng thử lại.";
+                    return;
+                }
+                else {
+                    self.dataLogin.messagePassword = "";
+                }
+                self.dataLogin.isLoad = true;
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/AdminAccess/SignIn",
+                    data: JSON.stringify({
+                        email: self.dataLogin.email,
+                        password: self.dataLogin.password,
+                    }),
+                    success: function (data) {
+                        self.dataLogin.isLoad = false;
+                        if (data.status == 1) {
+                            window.location.href = "/admin";
+                        }
+                        else if (data.status == -1) {
+                            ShowAlert(data.message, "info");
+                        }
+                        else {
+                            ShowAlert(data.message, "danger");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        self.dataLogin.isLoad = false;
+                        ShowAlert(error, "danger");
+                    }
+                });
+
+            }
+
+
+
+        },
+        mounted() {
+            this.init();
+        },
+    });
+
+</script>

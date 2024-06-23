@@ -1,0 +1,160 @@
+@{
+    Layout = "_Layout";
+    StyleX.Models.Product product = @ViewBag.product as StyleX.Models.Product ?? new StyleX.Models.Product();
+}
+<section class="ftco-section mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 shadow rounded mb-3" style="min-height: 230px">
+                <model-viewer class="w-100 h-100" alt="model-product-detail"
+                              src="@product.ModelUrl" poster="@product.PosterUrl" ar shadow-intensity="1" camera-controls disable-pan
+                              disable-tap auto-rotate autoplay shadow-softness="0.1" min-camera-orbit="auto auto 100%"
+                              max-camera-orbit="auto auto 100%">
+                </model-viewer>
+            </div>
+            <div class="col-lg-6 product-details pl-md-5">
+                <h3>@product.Name</h3>
+                <div class="rating d-flex">
+                    <p class="text-left">
+                        @if (product.Sale > 0 && product.SaleEndAt > DateTime.Now)
+                        {
+                            <span class="mr-2 text-primary">Giảm giá <span style="font-size:17px;">@product.Sale%</span></span>
+                        }
+                    </p>
+                </div>
+                <p class="price">
+                    @if (product.Sale > 0 && product.SaleEndAt > DateTime.Now)
+                    {
+                        var pr = product.Price - (product.Price * product.Sale / 100);
+                        <span class="mx-2" style="text-decoration: line-through">@product.Price.ToString("#,##0")&#8363;</span>
+                        <span>@pr.ToString("#,##0")&#8363;</span>
+                    }
+                    else
+                    {
+                        <span>@product.Price.ToString("#,##0")&#8363;</span>
+                    }
+                </p>
+                <p>
+                    @product.Description
+                </p>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="form-group d-flex w-100">
+                            <div class="select-wrap w-100">
+                                <select class="form-control px-5 w-100" style="text-align:center;" id="selectSize">
+                                    <option style="font-size:15px;" value="">Chọn size</option>
+                                    @if (ViewBag.warehouses != null)
+                                    {
+                                        @foreach (StyleX.Models.Warehouse item in ViewBag.warehouses)
+                                        {
+                                            <option style="font-size:15px;" value="@item.Size">@item.Size</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="input-group col-md-6 d-flex mb-3">
+
+                        <input type="text" id="selectAmount" name="quantity" class="quantity form-control input-number"
+                                min="1" placeholder="Nhập số lượng">
+                    </div>
+
+                </div>
+                <p class="mt-3">
+                    <a href="javascript:;" onclick="DesignNowBtn()" class="btn btn-black py-2 px-5 mr-2" style="font-size: 16px;">Thiết kế ngay</a>
+                    <a href="javascript:;" class="btn btn-primary py-2 px-5" style="font-size: 16px;" onclick="AddToCartBtn()">Thêm vào giỏ</a>
+                </p>
+            </div>
+        </div>
+
+
+
+
+        <div class="row mt-5">
+            <div class="col-md-12 nav-link-wrap">
+                <div class="nav nav-pills d-flex text-center" id="v-pills-tab" role="tablist"
+                     aria-orientation="vertical">
+                    <a style="padding: 0.5rem 1rem !important" class="nav-link ftco-animate active mr-lg-1" id="v-pills-1-tab" data-toggle="pill"
+                       href="#v-pills-1" role="tab" aria-controls="v-pills-1" aria-selected="true">Thông tin sản phẩm</a>
+
+                    <a style="padding: 0.5rem 1rem !important" class="nav-link ftco-animate mr-lg-1" id="v-pills-2-tab" data-toggle="pill" href="#v-pills-2"
+                       role="tab" aria-controls="v-pills-2" aria-selected="false">Ảnh mẫu</a>
+
+                </div>
+            </div>
+            <div class="col-md-12 tab-wrap">
+
+                <div class="tab-content bg-light" id="v-pills-tabContent">
+
+                    <div class="tab-pane fade show active" id="v-pills-1" role="tabpanel"
+                         aria-labelledby="day-1-tab">
+                        <div class="p-4">
+                            <h3 class="mb-4">@product.Name</h3>
+                            <p>
+                                @product.Description
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-2" role="tabpanel" aria-labelledby="v-pills-day-2-tab">
+                        <div class="p-4">
+                            <div class="row g-2">
+                                @if (string.IsNullOrEmpty(product.PosterUrl) == false)
+                                {
+                                    <div class="col-md-4">
+                                        <a href="@product.PosterUrl" target="_blank">
+                                            <img style="width:100%" src="@product.PosterUrl" />
+                                        </a>
+                                    </div>
+
+                                }
+                                @if (string.IsNullOrEmpty(product.PosterDesignUrl1) == false)
+                                {
+                                    <div class="col-md-4">
+                                        <a href="@product.PosterDesignUrl1" target="_blank">
+                                            <img style="width:100%" src="@product.PosterDesignUrl1" />
+                                        </a>
+                                    </div>
+
+                                }
+                                @if (string.IsNullOrEmpty(product.PosterDesignUrl2) == false)
+                                {
+                                    <div class="col-md-4">
+                                        <a href="@product.PosterDesignUrl2" target="_blank">
+                                            <img style="width:100%" src="@product.PosterDesignUrl2" />
+                                        </a>
+
+                                    </div>
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section Scripts {
+    <script>
+        var selectSize = document.getElementById('selectSize');
+        var selectAmount = document.getElementById('selectAmount');
+
+        async function AddToCartBtn() {
+            let size = selectSize.value;
+            let amount = selectAmount.value;
+
+            AddToCart(@Html.Raw(product.ProductID), amount, size);
+        }
+        async function DesignNowBtn() {
+            DesignNow(@Html.Raw(product.ProductID));
+        }
+
+    </script>
+
+}

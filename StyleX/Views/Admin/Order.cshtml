@@ -1,0 +1,443 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+<div id="appOrder">
+    <div class="row align-items-end">
+        <div class="col-md-3 mb-3">
+            <label>Mã đơn hàng:</label>
+            <input type="text" class="form-control" v-model="orderID" placeholder="Nhập mã đơn hàng...">
+        </div>
+        <div class="col-md-3 mb-3">
+            <label>Tên người nhận:</label>
+            <input type="text" class="form-control" v-model="accountName" placeholder="Nhập tên người nhận...">
+        </div>
+
+        <div class="col-md-2 mb-3">
+            <button class="btn btn-success" style="width: 120px;" v-on:click="GetOrders()">Tìm kiếm</button>
+        </div>
+    </div>
+
+    <div style="overflow-x: auto">
+        <table class="table table-bordered" style="vertical-align: middle; text-align:center;">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Mã đơn hàng</th>
+                    <th scope="col">Người nhận</th>
+                    <th scope="col">Địa chỉ</th>
+                    <th scope="col">Số điện thoại</th>
+                    <th scope="col">Ghi chú</th>
+                    <th scope="col">Phí vận chuyển</th>
+                    <th scope="col">Tổng tiền</th>
+                    <th scope="col">Khuyến mại</th>
+                    <th scope="col">Số tiền phải trả</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Tài khoản tạo</th>
+                    <th scope="col">Ngày tạo</th>
+                    <th scope="col">Cập nhật lúc</th>
+                    <th scope="col" style="min-width: 200px">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody style="vertical-align:middle;" class="text-dark">
+                <tr v-if="isLoad">
+                    <td style="font-size: 35px; text-align:center;" colspan="9"><i class="fa-solid fa-spinner fa-spin-pulse"></i></td>
+                </tr>
+                <tr v-if="isLoad == false" v-for="(item,index) in dataTable">
+                    <td>{{item.orderID}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.address}}</td>
+                    <td>{{item.phoneNumber}}</td>
+                    <td>{{item.message}}</td>
+                    <td>{{Number(item.transportFee).toLocaleString('en-US')}}</td>
+                    <td>{{Number(item.basePrice).toLocaleString('en-US')}}</td>
+                    <td>{{Number(item.percentSale).toLocaleString('en-US')}}</td>
+                    <td>{{Number(item.netPrice).toLocaleString('en-US')}}</td>
+
+                    <td>
+                        <span class="badge badge-warning" v-if="item.status==0">Đang xử lý</span>
+                        <span class="badge badge-primary" v-if="item.status==1">Đang giao hàng</span>
+                        <span class="badge badge-success" v-if="item.status==2">Giao hàng thành công</span>
+                        <span class="badge badge-danger" v-if="item.status==3">Đã hủy</span>
+                    </td>
+                    <td>{{item.account.email}}</td>
+                    <td>{{formatDateDisplay(item.createAt)}}</td>
+                    <td>{{formatDateDisplay(item.updateAt)}}</td>
+
+                    <td>
+                        <button class="btn btn-success mx-1 my-1" data-toggle="modal" data-target="#exampleModalCenter" v-on:click="ViewDetail(item.orderID)">Chi tiết</button>
+                        <button class="btn btn-warning mx-1 my-1" data-toggle="modal" data-target="#modalUpdate" v-on:click="PopupUpdate(item)">Cập nhật</button>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-center mt-3" id="div-pagination">
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 70vw">
+            <div class="modal-content" style="margin-bottom: 150px">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Chi tiết hóa đơn</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow-x: auto; overflow-y: auto; max-height: 600px;">
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr style="vertical-align: middle">
+                                <th scope="col">#</th>
+                                <th scope="col">Sản phẩm</th>
+                                <th scope="col">Tên sản phẩm</th>
+                                <th scope="col">Mô tả</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col">Kích cỡ</th>
+                                <th scope="col">Giá</th>
+                                <th scope="col">Khuyến mại</th>
+                                <th scope="col">Thành tiền</th>
+                                <th scope="col">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="isLoadDetail">
+                                <td colspan="9"><i class="fa-solid fa-spinner fa-spin-pulse"></i></td>
+                            </tr>
+                            <tr v-if="!isLoadDetail" v-for="(item,index) in tableDetail">
+                                <td>{{index+1}}</td>
+                                <td><img v-bind:src="item.posterUrl" style="width: 100px;" /></td>
+                                <td>{{item.product.name}}</td>
+                                <td>{{item.product.description}}</td>
+                                <td>{{Number(item.amount).toLocaleString('en-US')}}</td>
+                                <td>{{item.size}}</td>
+                                <td>{{Number(item.product.price).toLocaleString('en-US')}}</td>
+                                <td>{{Number(item.product.sale).toLocaleString('en-US')}}%</td>
+                                <td>{{Number((item.product.price*item.amount) - (item.product.price/100*item.product.sale) * item.amount).toLocaleString('en-US')}}</td>
+                                <td><a class="btn btn-success" v-bind:href="'/design/viewdesign?id='+item.cartItemID">Xem 3D</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalUpdate" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px">
+            <div class="modal-content" style="margin-bottom: 150px">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Cập nhật đơn hàng </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 700px;">
+
+                    <div class="px-2" style="overflow-y:auto; max-height:668px;">
+                        <div class="form-group">
+                            <label>Người nhận</label>
+                            <input type="text" class="form-control" v-model="dataUpdate.name">
+                            <div class="text-danger" style="font-size: 14px;">{{dataUpdate.messageName}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Địa chỉ</label>
+                            <input type="text" class="form-control" v-model="dataUpdate.address">
+                            <div class="text-danger" style="font-size: 14px;">{{dataUpdate.messageAddress}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Số điện thoại</label>
+                            <input type="text" class="form-control" v-model="dataUpdate.phoneNumber">
+                            <div class="text-danger" style="font-size: 14px;">{{dataUpdate.messagePhoneNumber}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Ghi chú</label>
+                            <input type="text" class="form-control" v-model="dataUpdate.message">
+                            <div class="text-danger" style="font-size: 14px;">{{dataUpdate.messageMessage}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Phí vận chuyển (&#8363;)</label>
+                            <input type="text" class="form-control" v-model="dataUpdate.transportFee">
+                            <div class="text-danger" style="font-size: 14px;">{{dataUpdate.messageTransportFee}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Số tiền phải trả (&#8363;)</label>
+                            <input type="text" class="form-control" v-model="dataUpdate.netPrice">
+                            <div class="text-danger" style="font-size: 14px;">{{dataUpdate.messageNetPrice}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Trạng thái</label>
+                            <select class="form-control" v-model="dataUpdate.status">
+                                <option value="0">Đang xử lý</option>
+                                <option value="1">Đang giao hàng</option>
+                                <option value="2">Giao hàng thành công</option>
+                                <option value="3">Đã hủy</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button v-if="dataUpdate.isLoad == false" type="button" class="btn btn-primary" v-on:click="UpdateOrder()">Xác nhận</button>
+                    <button v-if="dataUpdate.isLoad" type="button" class="btn btn-primary">Đang xử lý...</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+
+
+
+@section Scripts {
+    <script>
+
+        var appOrder = new Vue({
+            el: "#appOrder",
+            data: {
+                resData: [],
+                dataTable: [],
+                isLoad: true,
+                status: 0,
+                accountName: "",
+                orderID: "@Html.Raw(ViewBag.orderID)",
+                totalPages: 1,
+                pageSize: 15,
+                dataUpdate: {
+                    name: "",
+                    messageName: "",
+                    address: "",
+                    messageAddress: "",
+                    phoneNumber: "",
+                    messagePhoneNumber: "",
+                    message: "",
+                    messageMessage: "",
+                    transportFee: "",
+                    messageTransportFee: "",
+                    netPrice: "",
+                    messageNetPrice: "",
+                    status: 0,
+                    isLoad: false,
+                    orderID: ""
+
+                },
+                tableDetail: [],
+                isLoadDetail: false
+
+
+            },
+            methods: {
+                init: async function () {
+
+                    await this.GetOrders();
+
+                    this.$forceUpdate();
+                },
+                GetOrders: async function () {
+                    var self = this;
+                    self.isLoad = true;
+                    self.dataTable = [];
+
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "/admin/GetOrders",
+                        data: JSON.stringify({
+                            accountName: self.accountName,
+                            orderID: self.orderID
+                        }),
+                        success: function (res) {
+                            self.isLoad = false;
+                            if (res.status == 1) {
+                                self.resData = res.data;
+                                self.dataTable = self.resData.slice(0, self.pageSize);
+                                self.totalPages = Math.ceil(self.resData.length / self.pageSize);
+                                if (self.resData.length > 0) {
+                                    document.getElementById("div-pagination").innerHTML = `<ul id="pagination" class="pagination-md"></ul>`;
+                                    $('#pagination').twbsPagination({
+                                        totalPages: self.totalPages,
+                                        visiblePages: 6,
+                                        first: "Trang đầu",
+                                        last: "Trang cuối",
+                                        next: 'Trang tiếp',
+                                        prev: 'Trang trước',
+                                        onPageClick: function (event, page) {
+                                            var start = (page - 1) * self.pageSize;
+                                            var end = page * self.pageSize;
+                                            self.dataTable = self.resData.slice(start, end);
+                                        }
+                                    });
+                                }
+                            }
+                            else {
+                                ShowAlert(res.message, "danger");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            self.isLoad = false;
+                            ShowAlert(error, "danger");
+                        }
+                    });
+
+                },
+                formatDateDisplay: function (inputDateString) {
+                    if (!inputDateString) {
+                        return "";
+                    }
+
+                    // Tạo một đối tượng Date từ chuỗi đầu vào
+                    var inputDate = new Date(inputDateString);
+
+                    // Lấy các thông tin thời gian từ đối tượng Date
+                    var hours = inputDate.getHours().toString().padStart(2, '0');
+                    var minutes = inputDate.getMinutes().toString().padStart(2, '0');
+                    var seconds = inputDate.getSeconds().toString().padStart(2, '0');
+                    var day = inputDate.getDate().toString().padStart(2, '0');
+                    var month = (inputDate.getMonth() + 1).toString().padStart(2, '0'); //Tháng trong JavaScript bắt đầu từ 0, nên cần cộng thêm 1
+                    var year = inputDate.getFullYear();
+
+
+                    if (isNaN(day) || isNaN(month) || isNaN(year)) {
+                        return '';
+                    }
+
+
+                    var formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+                    return formattedDate;
+                },
+                PopupUpdate: function (order) {
+                    this.dataUpdate.name = order.name;
+                    this.dataUpdate.address = order.address;
+                    this.dataUpdate.phoneNumber = order.phoneNumber;
+                    this.dataUpdate.message = order.message;
+                    this.dataUpdate.transportFee = order.transportFee;
+                    this.dataUpdate.netPrice = order.netPrice;
+                    this.dataUpdate.status = order.status;
+                    this.dataUpdate.orderID = order.orderID;
+                },
+                ViewDetail: async function (id) {
+                    var self = this;
+                    self.isLoadDetail = true;
+                    self.tableDetail = [];
+
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "/admin/GetOrderItems",
+                        data: JSON.stringify({
+                            ID: id
+                        }),
+                        success: function (res) {
+                            self.isLoadDetail = false;
+                            if (res.status == 1) {
+                                self.tableDetail = res.data;
+
+                            }
+                            else {
+                                ShowAlert(res.message, "danger");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            self.isLoadDetail = false;
+                            ShowAlert(error, "danger");
+                        }
+                    });
+
+                },
+                UpdateOrder: async function () {
+                    var self = this;
+
+                    if (!self.dataUpdate.name) {
+                        self.dataUpdate.messageName = "Vui lòng điền tên người nhận";
+                        return;
+                    }
+                    else {
+                        self.dataUpdate.messageName = "";
+                    }
+                    if (!self.dataUpdate.address) {
+                        self.dataUpdate.messageAddress = "Vui lòng điền địa chỉ người nhận";
+                        return;
+                    }
+                    else {
+                        self.dataUpdate.messageAddress = "";
+                    }
+                    if (!self.dataUpdate.phoneNumber) {
+                        self.dataUpdate.messagePhoneNumber = "Vui lòng điền số điện thoại người nhận";
+                        return;
+                    }
+                    else {
+                        self.dataUpdate.messagePhoneNumber = "";
+                    }
+                    if (!self.dataUpdate.transportFee || isNaN(self.dataUpdate.transportFee)) {
+                        self.dataUpdate.messageTransportFee = "Vui lòng chỉ nhập số.";
+                        return;
+                    }
+                    else {
+                        self.dataUpdate.messageTransportFee = "";
+                    }
+                    if (!self.dataUpdate.netPrice || isNaN(self.dataUpdate.netPrice)) {
+                        self.dataUpdate.messageNetPrice = "Vui lòng chỉ nhập số.";
+                        return;
+                    }
+                    else {
+                        self.dataUpdate.messageNetPrice = "";
+                    }
+
+                    self.dataUpdate.isLoad = true;
+                    $.ajax({
+                        url: '/admin/UpdateOrder',
+                        type: 'POST',
+                        data: JSON.stringify({
+                            orderID: self.dataUpdate.orderID,
+                            status: self.dataUpdate.status,
+                            netPrice: self.dataUpdate.netPrice,
+                            address: self.dataUpdate.address,
+                            phoneNumber: self.dataUpdate.phoneNumber,
+                            transportFee: self.dataUpdate.transportFee,
+                            message: self.dataUpdate.message,
+                            name: self.dataUpdate.name,
+
+
+                        }),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (res) {
+                            self.dataUpdate.isLoad = false;
+                            if (res.status == 1) {
+                                self.GetOrders();
+                                ShowAlert(res.message, "success");
+                            }
+                            else {
+                                ShowAlert(res.message, "danger");
+                            }
+                            $('#modalUpdate').modal('hide');
+
+                        },
+                        error: function (error) {
+                            self.dataUpdate.isLoad = false;
+                            ShowAlert(error.responseJSON.message, "danger");
+                        }
+                    });
+
+                },
+
+
+
+
+
+
+            },
+            mounted() {
+                this.init();
+            },
+        });
+    </script>
+
+}

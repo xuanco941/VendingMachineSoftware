@@ -1,0 +1,180 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+<div id="appAccount">
+    <div class="row align-items-end">
+        <div class="col-md-3 mb-3">
+            <label>Tên tài khoản:</label>
+            <input type="text" class="form-control" v-model="accountName" placeholder="Nhập tên tài khoản...">
+        </div>
+        <div class="col-md-3 mb-3">
+            <label>Trạng thái:</label>
+            <select class="form-control" v-model="status">
+                <option value="0">Tất cả</option>
+                <option value="1">Đã sử dụng</option>
+                <option value="2">Chưa sử dụng</option>
+            </select>
+        </div>
+        <div class="col-md-2 mb-3">
+            <button class="btn btn-success" style="width: 120px;" v-on:click="GetAccounts()">Tìm kiếm</button>
+        </div>
+    </div>
+
+    <div style="overflow-x: auto">
+        <table class="table table-bordered" style="vertical-align: middle; text-align:center;">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Kết quả quay</th>
+                    <th scope="col">Giá trị (%)</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Tài khoản</th>
+                    <th scope="col">Ngày tạo</th>
+                    <th scope="col">Ngày sử dụng</th>
+                    <th scope="col">Ngày hết hạn</th>
+                    <th scope="col">Đơn hàng áp dụng</th>
+                </tr>
+            </thead>
+            <tbody style="vertical-align:middle;" class="text-dark">
+                <tr v-if="isLoad">
+                    <td style="font-size: 35px; text-align:center;" colspan="9"><i class="fa-solid fa-spinner fa-spin-pulse"></i></td>
+                </tr>
+                <tr v-if="isLoad == false" v-for="(item,index) in dataTable">
+                    <td>{{index+1}}</td>
+                    <td>{{item.resultSpin}}</td>
+                    <td>{{item.number}}</td>
+                    <td>
+                        <span class="badge badge-success" v-if="item.status==false">Chưa sử dụng</span>
+                        <span class="badge badge-warning" v-if="item.status==true">Đã sử dụng</span>
+                    </td>
+                    <td>{{item.email}}</td>
+                    <td>{{formatDateDisplay(item.createAt)}}</td>
+                    <td>{{formatDateDisplay(item.usedAt)}}</td>
+                    <td>{{formatDateDisplay(item.expiredAt)}}</td>
+
+                    <td>
+                        <a v-if="item.orderID" class="btn btn-primary mx-2" v-bind:href="'/admin/order?orderID='+item.orderID">Chi tiết</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-center mt-3" id="div-pagination">
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+
+
+
+@section Scripts {
+    <script>
+
+        var appAccount = new Vue({
+            el: "#appAccount",
+            data: {
+                resData: [],
+                dataTable: [],
+                isLoad: true,
+                status: 0,
+                accountName: "",
+
+                totalPages: 1,
+                pageSize: 15
+
+            },
+            methods: {
+                init: async function () {
+
+                    await this.GetAccounts();
+
+                    this.$forceUpdate();
+                },
+                GetAccounts: async function () {
+                    var self = this;
+                    self.isLoad = true;
+                    self.dataTable = [];
+
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "/admin/GetPromotions",
+                        data: JSON.stringify({
+                            accountName: self.accountName,
+                            status: self.status
+                        }),
+                        success: function (res) {
+                            self.isLoad = false;
+                            if (res.status == 1) {
+                                self.resData = res.data;
+                                self.dataTable = self.resData.slice(0, self.pageSize);
+                                self.totalPages = Math.ceil(self.resData.length / self.pageSize);
+                                if (self.resData.length > 0) {
+                                    document.getElementById("div-pagination").innerHTML = `<ul id="pagination" class="pagination-md"></ul>`;
+                                    $('#pagination').twbsPagination({
+                                        totalPages: self.totalPages,
+                                        visiblePages: 6,
+                                        first: "Trang đầu",
+                                        last: "Trang cuối",
+                                        next: 'Trang tiếp',
+                                        prev: 'Trang trước',
+                                        onPageClick: function (event, page) {
+                                            var start = (page - 1) * self.pageSize;
+                                            var end = page * self.pageSize;
+                                            self.dataTable = self.resData.slice(start, end);
+                                        }
+                                    });
+                                }
+                            }
+                            else {
+                                ShowAlert(res.message, "danger");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            self.isLoad = false;
+                            ShowAlert(error, "danger");
+                        }
+                    });
+
+                },
+                formatDateDisplay: function (inputDateString) {
+                    if (!inputDateString) {
+                        return "";
+                    }
+
+                    // Tạo một đối tượng Date từ chuỗi đầu vào
+                    var inputDate = new Date(inputDateString);
+
+                    // Lấy các thông tin thời gian từ đối tượng Date
+                    var hours = inputDate.getHours().toString().padStart(2, '0');
+                    var minutes = inputDate.getMinutes().toString().padStart(2, '0');
+                    var seconds = inputDate.getSeconds().toString().padStart(2, '0');
+                    var day = inputDate.getDate().toString().padStart(2, '0');
+                    var month = (inputDate.getMonth() + 1).toString().padStart(2, '0'); //Tháng trong JavaScript bắt đầu từ 0, nên cần cộng thêm 1
+                    var year = inputDate.getFullYear();
+
+
+                    if (isNaN(day) || isNaN(month) || isNaN(year)) {
+                        return '';
+                    }
+
+
+                    var formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+                    return formattedDate;
+                }
+
+
+
+
+            },
+            mounted() {
+                this.init();
+            },
+        });
+    </script>
+
+}

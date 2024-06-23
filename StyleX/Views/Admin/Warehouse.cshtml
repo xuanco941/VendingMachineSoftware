@@ -1,0 +1,446 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+<div id="appAccount">
+    <div class="row align-items-end">
+        <div class="col-7 row align-items-end">
+            <div class="col-md-5 mb-3">
+                <label>Sản phẩm:</label>
+                <select class="form-control" v-model="productID" v-on:change="GetAccounts()">
+                    <option value="0">Tất cả</option>
+                    <option v-for="item in tableProduct" v-bind:value="item.productID">{{item.name}}</option>
+                </select>
+            </div>
+
+            <div class="col-md-5 mb-3">
+                <button class="btn btn-success" style="width: 120px;" v-on:click="GetAccounts()">Tìm kiếm</button>
+            </div>
+        </div>
+        <div class="col-5 justify-content-end d-flex mb-3 mt-2">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modalAdd">Thêm mới</button>
+
+        </div>
+    </div>
+    <div style="overflow-x: auto">
+        <table class="table table-bordered" style="vertical-align: middle; text-align:center;">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Hình ảnh</th>
+                    <th scope="col">Tên sản phẩm</th>
+                    <th scope="col">Kích cỡ</th>
+                    <th scope="col">Số lượng còn lại</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody style="vertical-align:middle;" class="text-dark">
+                <tr v-if="isLoad">
+                    <td style="font-size: 35px; text-align:center;" colspan="9"><i class="fa-solid fa-spinner fa-spin-pulse"></i></td>
+                </tr>
+                <tr v-if="isLoad == false" v-for="(item,index) in dataTable">
+                    <td>
+                        <a v-bind:href="item.product.posterUrl" alt="preview" target="_blank">
+                            <img v-bind:src="item.product.posterUrl" style="height: 90px" />
+                        </a>
+                    </td>
+                    <td>{{item.product.name}}</td>
+                    <td>{{item.size}}</td>
+                    <td>{{Number(item.amount).toLocaleString('en-US')}}</td>
+
+                    <td>
+                        <button style="width:110px" class="btn btn-info mx-1 my-1" data-toggle="modal" data-target="#modalUpdate" v-on:click="PopupUpdateProduct(item)">Cập nhật</button>
+                        <button style="width:110px" class="btn btn-danger mx-1 my-1" data-toggle="modal" data-target="#modalDelete" v-on:click="PopupDeleteProduct(item)">Xóa</button>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-center mt-3" id="div-pagination">
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="modalUpdate" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
+            <div class="modal-content" style="margin-bottom: 150px">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Cập nhật kho sản phẩm</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow-x: auto; overflow-y: auto; max-height: 600px;">
+                    <div>
+                        <div class="form-group">
+                            <label>Kích cỡ</label>
+                            <input type="text" class="form-control" v-model="dataUpdate.size">
+                            <div class="text-danger" style="font-size: 14px;">{{dataUpdate.messageSize}}</div>
+
+                        </div>
+                        <div class="form-group">
+                            <label>Số lượng</label>
+                            <input type="text" class="form-control" v-model="dataUpdate.amount">
+                            <div class="text-danger" style="font-size: 14px;">{{dataUpdate.messageAmount}}</div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button v-if="dataUpdate.isLoad == false" type="button" class="btn btn-primary" v-on:click="Update()">Xác nhận</button>
+                    <button v-if="dataUpdate.isLoad" type="button" class="btn btn-primary">Đang xử lý...</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
+            <div class="modal-content" style="margin-bottom: 150px">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Thêm sản phẩm vào kho</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow-x: auto; overflow-y: auto; max-height: 600px;">
+                    <div>
+                        <div class="form-group">
+                            <label>Sản phẩm</label>
+                            <select class="form-control" v-model="dataAdd.productID">
+                                <option v-for="item in tableProduct" v-bind:value="item.productID">{{item.name}}</option>
+                            </select>
+                            <div class="text-danger" style="font-size: 14px;">{{dataAdd.messageProductID}}</div>
+
+                        </div>
+                        <div class="form-group">
+                            <label>Kích cỡ</label>
+                            <input type="text" class="form-control" v-model="dataAdd.size">
+                            <div class="text-danger" style="font-size: 14px;">{{dataAdd.messageSize}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Số lượng</label>
+                            <input type="text" class="form-control" v-model="dataAdd.amount">
+                            <div class="text-danger" style="font-size: 14px;">{{dataAdd.messageAmount}}</div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button v-if="dataAdd.isLoad == false" type="button" class="btn btn-primary" v-on:click="Add()">Xác nhận</button>
+                    <button v-if="dataAdd.isLoad" type="button" class="btn btn-primary">Đang xử lý...</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
+            <div class="modal-content" style="margin-bottom: 150px">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Xóa sản phẩm trong kho</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow-x: auto; overflow-y: auto; max-height: 700px;">
+                    <h3>Bạn có chắc chắn muốn xóa sản phẩm trong kho này?</h3>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button v-if="dataDelete.isLoad == false" type="button" class="btn btn-danger" v-on:click="Delete()">Xác nhận</button>
+                    <button v-if="dataDelete.isLoad" type="button" class="btn btn-primary">Đang xử lý...</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+
+
+@section Scripts {
+    <script>
+
+        var appAccount = new Vue({
+            el: "#appAccount",
+            data: {
+                resData: [],
+                dataTable: [],
+                isLoad: true,
+                productID: 0,
+                tableProduct: [],
+
+                dataUpdate: {
+                    warehouseID: 0,
+                    size: "",
+                    messageSize: "",
+                    amount: "",
+                    messageAmount: "",
+                    isLoad: false
+                },
+                dataAdd: {
+                    productID: 0,
+                    size: "",
+                    messageSize: "",
+                    amount: "",
+                    messageAmount: "",
+                    isLoad: false,
+                    messageProductID: ""
+                },
+                dataDelete: {
+                    warehouseID: 0,
+                    isLoad: false
+                },
+
+                totalPages: 1,
+                pageSize: 15
+
+            },
+            methods: {
+                init: async function () {
+
+                    await this.GetProduct();
+                    await this.GetAccounts();
+
+                    this.$forceUpdate();
+                },
+                GetProduct: async function () {
+                    var self = this;
+                    self.tableProduct = [];
+
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "/admin/GetListProducts",
+                        data: JSON.stringify({
+                        }),
+                        success: function (res) {
+                            if (res.status == 1) {
+                                self.tableProduct = res.data;
+                                if (self.tableProduct.length > 0) {
+                                    self.dataAdd.productID = self.tableProduct[0].productID;
+                                }
+                            }
+                            else {
+                                ShowAlert(res.message, "danger");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            ShowAlert(error.responseJSON.massage, "danger");
+                        }
+                    });
+
+                },
+
+                GetAccounts: async function () {
+                    var self = this;
+                    self.isLoad = true;
+                    self.dataTable = [];
+
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "/admin/GetWarehouses",
+                        data: JSON.stringify({
+                            ID: self.productID
+                        }),
+                        success: function (res) {
+                            self.isLoad = false;
+                            if (res.status == 1) {
+                                self.resData = res.data;
+                                self.dataTable = self.resData.slice(0, self.pageSize);
+                                self.totalPages = Math.ceil(self.resData.length / self.pageSize);
+
+                                if(self.resData.length>0){
+                                    document.getElementById("div-pagination").innerHTML = `<ul id="pagination" class="pagination-md"></ul>`;
+                                    $('#pagination').twbsPagination({
+                                        totalPages: self.totalPages,
+                                        visiblePages: 6,
+                                        first: "Trang đầu",
+                                        last: "Trang cuối",
+                                        next: 'Trang tiếp',
+                                        prev: 'Trang trước',
+                                        onPageClick: function (event, page) {
+                                            var start = (page - 1) * self.pageSize;
+                                            var end = page * self.pageSize;
+                                            self.dataTable = self.resData.slice(start, end);
+                                        }
+                                    });
+                                }
+
+
+                            }
+                            else {
+                                ShowAlert(res.message, "danger");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            self.isLoad = false;
+                            ShowAlert(error.responseJSON.message, "danger");
+                        }
+                    });
+
+                },
+                PopupUpdateProduct: function (warehouse) {
+                    this.dataUpdate.warehouseID = warehouse.warehouseID;
+                    this.dataUpdate.size = warehouse.size;
+                    this.dataUpdate.amount = warehouse.amount;
+                    this.dataUpdate.messageSize = "";
+                    this.dataUpdate.messageAmount = "";
+                },
+                Update: async function () {
+                    var self = this;
+
+                    if (!self.dataUpdate.size) {
+                        self.dataUpdate.messageSize = "Vui lòng nhập kích thước";
+                        return;
+                    }
+                    else {
+                        self.dataUpdate.messageSize = "";
+                    }
+                    if (!self.dataUpdate.amount || isNaN(self.dataUpdate.amount)) {
+                        self.dataUpdate.messageAmount = "Vui lòng chỉ nhập số.";
+                        return;
+                    }
+                    else {
+                        self.dataUpdate.messageAmount = "";
+                    }
+
+                    self.dataUpdate.isLoad = true;
+                    $.ajax({
+                        url: '/admin/UpdateWarehouse',
+                        type: 'POST',
+                        data: JSON.stringify({
+                            warehouseID: self.dataUpdate.warehouseID,
+                            size: self.dataUpdate.size,
+                            amount: self.dataUpdate.amount,
+
+                        }),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (res) {
+                            self.dataUpdate.isLoad = false;
+                            if (res.status == 1) {
+                                self.GetAccounts();
+                                ShowAlert(res.message, "success");
+                            }
+                            else {
+                                ShowAlert(res.message, "danger");
+                            }
+                            $('#modalUpdate').modal('hide');
+
+                        },
+                        error: function (error) {
+                            self.dataUpdate.isLoad = false;
+                            ShowAlert(error.responseJSON.message, "danger");
+                        }
+                    });
+
+                },
+                Add: async function () {
+                    var self = this;
+                    if (!self.dataAdd.productID) {
+                        self.dataAdd.messageProductID = "Vui lòng chọn sản phẩm";
+                        return;
+                    }
+                    else {
+                        self.dataAdd.messageProductID = "";
+                    }
+
+                    if (!self.dataAdd.size) {
+                        self.dataAdd.messageSize = "Vui lòng nhập kích thước";
+                        return;
+                    }
+                    else {
+                        self.dataAdd.messageSize = "";
+                    }
+                    if (!self.dataAdd.amount || isNaN(self.dataAdd.amount)) {
+                        self.dataAdd.messageAmount = "Vui lòng chỉ nhập số.";
+                        return;
+                    }
+                    else {
+                        self.dataAdd.messageAmount = "";
+                    }
+
+                    self.dataAdd.isLoad = true;
+                    $.ajax({
+                        url: '/admin/AddWarehouse',
+                        type: 'POST',
+                        data: JSON.stringify({
+                            productID: self.dataAdd.productID,
+                            size: self.dataAdd.size,
+                            amount: self.dataAdd.amount,
+
+                        }),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (res) {
+                            self.dataAdd.isLoad = false;
+                            if (res.status == 1) {
+                                self.GetAccounts();
+                                ShowAlert(res.message, "success");
+                            }
+                            else {
+                                ShowAlert(res.message, "danger");
+                            }
+                            $('#modalAdd').modal('hide');
+
+                        },
+                        error: function (error) {
+                            self.dataAdd.isLoad = false;
+                            ShowAlert(error.responseJSON.message, "danger");
+                        }
+                    });
+
+                },
+                PopupDeleteProduct: function (warehouse) {
+                    this.dataDelete.warehouseID = warehouse.warehouseID;
+                },
+                Delete: async function () {
+                    var self = this;
+
+                    self.dataDelete.isLoad = true;
+                    $.ajax({
+                        url: '/admin/DeleteWarehouse',
+                        type: 'POST',
+                        data: JSON.stringify({
+                            ID: self.dataDelete.warehouseID,
+
+                        }),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (res) {
+                            self.dataDelete.isLoad = false;
+                            if (res.status == 1) {
+                                self.GetAccounts();
+                                ShowAlert(res.message, "success");
+                            }
+                            else {
+                                ShowAlert(res.message, "danger");
+                            }
+                            $('#modalDelete').modal('hide');
+
+                        },
+                        error: function (error) {
+                            self.dataDelete.isLoad = false;
+                            ShowAlert(error.responseJSON.message, "danger");
+                        }
+                    });
+
+                },
+
+
+
+            },
+            mounted() {
+                this.init();
+            },
+        });
+    </script>
+
+}

@@ -1,0 +1,368 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title> StyleX </title>
+    <link rel="icon" href="/logo/stylex-high-resolution-logo.ico" type="image/png">
+
+
+    <link rel="stylesheet" href="/library/css/animate.css">
+    <link rel="stylesheet" href="/library/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/library/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/library/css/magnific-popup.css">
+    <link rel="stylesheet" href="/library/css/aos.css">
+    <link rel="stylesheet" href="/library/css/bootstrap.css">
+    <link rel="stylesheet" href="/library/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/library/css/jquery.timepicker.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/library/css/style.css">
+
+</head>
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="/">StyleX</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="oi oi-menu"></span> Menu
+            </button>
+
+            <div class="collapse navbar-collapse" id="ftco-nav">
+                <ul class="navbar-nav ml-auto" id="nav-layout-link">
+                    <li class="nav-item active"><a href="/" class="nav-link color-hover-nav">Trang chủ</a></li>
+                    <li class="nav-item"><a href="/product" class="nav-link color-hover-nav">Sản phẩm</a></li>
+                    <li class="nav-item"><a href="/design" class="nav-link color-hover-nav">Thiết kế</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" id="dropdown04" class="nav-link color-hover-nav dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tài khoản</a>
+                        <div class="dropdown-menu shadow rounded" aria-labelledby="dropdown04" style="position: absolute; top:80%">
+                            <a class="dropdown-item" href="/account">Thông tin tài khoản</a>
+                            <a v-if="!isSignin" class="dropdown-item" href="/access/login">Đăng nhập</a>
+                            <a v-if="isSignin" class="dropdown-item" href="/access/logout">Đăng xuất</a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a href="/promotion" class="nav-link color-hover-nav">Quay thưởng</a></li>
+                    <li class="nav-item cta cta-colored"><a href="/cart" class="nav-link color-hover-nav"><i class="fa-solid fa-cart-shopping"></i>[{{countCartItem}}]</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- END nav -->
+    @RenderBody()
+
+
+
+
+    <footer class="ftco-footer ftco-section">
+        <div class="container">
+            <div class="row">
+                <div class="mouse">
+                    <a href="#" class="mouse-icon">
+                        <div class="mouse-wheel"><i class="fa-solid fa-angles-up fa-bounce mt-2"></i></div>
+                    </a>
+                </div>
+            </div>
+            <div class="row mb-5">
+                <div class="col-md">
+                    <div class="ftco-footer-widget mb-3">
+                        <h2 class="ftco-heading-2">StyleX</h2>
+                        <p>
+                            In ấn và thiết kế quần áo chất lượng cao.
+                        </p>
+                        <p>
+                            Đa dạng chất liệu.
+                        </p>
+                        <p>
+                            Thiết kế trên mô hình 3D.
+                        </p>
+                        <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-3">
+                            <li class="ftco-animate">
+                                <a href="https://www.facebook.com/xuanco941" class="text-center d-flex align-items-center justify-content-center">
+                                    <i class="fa-brands fa-facebook" style="font-size: 30px"></i>
+                                </a>
+                            </li>
+                            <li class="ftco-animate">
+                                <a href="https://www.instagram.com/vibes.js" class="text-center d-flex align-items-center justify-content-center">
+                                    <i class="fa-brands fa-instagram" style="font-size: 30px"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="ftco-footer-widget mb-4">
+                        <h2 class="ftco-heading-2">Menu</h2>
+                        <ul class="list-unstyled">
+                            <li class="color-hover"><a href="/product" class="py-2 d-block color-hover">Sản phẩm</a></li>
+                            <li class="color-hover"><a href="/design" class="py-2 d-block color-hover">Thiết kế</a></li>
+                            <li class="color-hover"><a href="/account" class="py-2 d-block color-hover">Tài khoản</a></li>
+                            <li class="color-hover"><a href="/promotion" class="py-2 d-block color-hover">Quay thưởng</a></li>
+                            <li class="color-hover"><a href="/cart" class="py-2 d-block color-hover">Giỏ hàng</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="ftco-footer-widget mb-4 ">
+                        <h2 class="ftco-heading-2">Liên hệ với chúng tôi?</h2>
+                        <div class="block-23 mb-3">
+                            <ul>
+                                <li class="d-flex align-content-center">
+                                    <i class="fa-solid fa-location-dot" style="font-size: 20px; margin-right: 7px;"></i><span class="text">
+                                        175 Tây Sơn, Đống Đa, Hà Nội
+                                    </span>
+                                </li>
+                                <li class="d-flex align-content-center mt-3 color-hover">
+                                    <a href="tel:84388530006">
+                                        <i class="fa-solid fa-phone" style="font-size: 20px; margin-right: 7px;"></i><span class="text">
+                                            +84 388 530 006
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="d-flex align-content-center color-hover">
+                                    <a href="mailto:xuanco941@gmail.com">
+                                        <i class="fa-solid fa-envelope" style="font-size: 20px; margin-right: 7px;"></i><span class="text">xuanco941@gmail.com</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
+
+    <!-- loader -->
+    <div id="ftco-loader" class="show fullscreen">
+        <svg class="circular" width="48px" height="48px">
+            <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
+            <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+                    stroke="#86c9ef" />
+        </svg>
+    </div>
+
+    <div id="alertBox" style="max-width: 400px; position:fixed; bottom: 15px; right: 20px; margin: 0px; opacity: 0.95; z-index: 9999999; padding: 15px 20px; font-size: 17px;">
+    </div>
+
+
+    <script src="/library/js/jquery.min.js"></script>
+    <script src="/library/js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="/library/js/popper.min.js"></script>
+    <script src="/library/js/bootstrap.min.js"></script>
+    <script src="/library/js/jquery.easing.1.3.js"></script>
+    <script src="/library/js/jquery.waypoints.min.js"></script>
+    <script src="/library/js/jquery.stellar.min.js"></script>
+    <script src="/library/js/owl.carousel.min.js"></script>
+    <script src="/library/js/jquery.magnific-popup.min.js"></script>
+    <script src="/library/js/aos.js"></script>
+    <script src="/library/js/jquery.animateNumber.min.js"></script>
+    <script src="/library/js/bootstrap-datepicker.js"></script>
+    <script src="/library/js/scrollax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.1/jquery.twbsPagination.min.js"> </script>
+
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js">
+    </script>
+    <!--vue2 development-->
+    <!--<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>-->
+     <!--vue2 production-->
+     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+
+    <script>
+        Vue.config.ignoredElements = [
+            'model-viewer'
+            // other ignored elements if any
+        ];
+
+        //check image upload
+        function isFileImage(file) {
+            return file && file['type'].split('/')[0] === 'image';
+        }
+
+        //alert
+        var timeoutAlertID;
+        function ShowAlert(html, type) {
+            var alertBox = document.querySelector('#alertBox');
+            var alert = `<div class="alert alert-${type} alert-dismissible" role="alert">
+                                                                                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                                                                ${html}
+                                                                                                            </div>`;
+
+            if (timeoutAlertID) {
+                alertBox.innerHTML = '';
+                clearTimeout(timeoutAlertID);
+            }
+
+            alertBox.innerHTML = alert;
+            timeoutAlertID = setTimeout(function () {
+                alertBox.innerHTML = '';
+            }, 3500);
+        };
+
+    </script>
+
+    <script>
+
+
+
+
+        //set tất cả material về OPAQUE, double side = true
+        window.addEventListener('load', (e) => {
+            var allModels = Array.from(document.querySelectorAll('model-viewer'));
+
+            allModels.forEach((md) => {
+                md.addEventListener('load', (elm) => {
+                    for (var m of elm.target.model.materials) {
+                        m.setAlphaMode("OPAQUE");
+                    }
+                });
+
+            });
+
+
+            var navLinks = Array.from(document.querySelector('#nav-layout-link').children);
+            navLinks.forEach(e => {
+                if ('@Html.Raw(ViewBag.pageName)' == e.children[0].textContent) {
+                    e.classList.add('active');
+                }
+                else {
+                    e.classList.remove('active');
+                }
+
+            })
+        });
+
+
+    </script>
+
+
+    <script>
+
+        //add product to cart
+        async function AddToCart(productID, amount, size) {
+            if (!amount) amount = 1;
+            if (!size) size = "";
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "/Cart/AddToCart",
+                data: JSON.stringify({
+                    productID: productID,
+                    amount: amount,
+                    size: size
+                }),
+                success: function (res) {
+                    if (res.status == 1) {
+                        ShowAlert(res.message, "success");
+                        appCheckLogin.CheckLogin();
+                    }
+                    else if (res.status == 2) {
+                        ShowAlert(res.message, "info");
+                    }
+                    else {
+                        ShowAlert(res.message, "danger");
+                    }
+                },
+                error: function (status, xhr, error) {
+                    if (status.status == 401) {
+                        window.location.href = window.location.origin + "/access/login";
+                    }
+                    ShowAlert(error.responseJSON.message, "danger");
+                }
+            });
+
+        };
+        async function DesignNow(productID) {
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "/Cart/AddToCart",
+                data: JSON.stringify({
+                    productID: productID,
+                    amount: 1,
+                    size: ""
+                }),
+                success: function (res) {
+                    if (res.status == 1) {
+                        appCheckLogin.CheckLogin();
+                        var newTab = window.open(window.location.origin + "/design?id=" + res.data, '_blank');
+                        newTab.focus();
+                    }
+                    else {
+                        ShowAlert(res.message, "danger");
+                    }
+                },
+                error: function (status, xhr, error) {
+                    if (status.status == 401) {
+                        window.location.href = window.location.origin + "/access/login";
+                    }
+                    ShowAlert(status.statusText, "danger");
+                }
+            });
+
+        };
+
+        var appCheckLogin = new Vue({
+            el: "#nav-layout-link",
+            data: {
+                isSignin: false,
+                countCartItem: 0
+            },
+            methods: {
+                init: async function () {
+
+                    await this.CheckLogin();
+
+                    this.$forceUpdate();
+
+                },
+                CheckLogin: async function () {
+                    var self = this;
+
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "/Access/CheckLogin",
+                        data: JSON.stringify({
+                        }),
+                        success: function (data) {
+                            console.log(data)
+                            if (data.status == 1) {
+                                self.isSignin = true;
+                                self.countCartItem = data.data;
+                            }
+                            else {
+                                self.isSignin = false;
+                                self.countCartItem = 0;
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            self.isSignin = false;
+                            self.countCartItem = 0;
+                        }
+                    });
+
+
+
+                },
+
+            },
+            mounted() {
+                this.init();
+            },
+        });
+
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="/js/animation_view.js"></script>
+
+
+</body>
+</html>
