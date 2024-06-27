@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>WantFood - Đồ ăn đặc sản</title>
+    <title>Máy bán nước tự động</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -27,18 +27,49 @@
 
     <!-- Template Stylesheet -->
     <link href="~/css/style.css" rel="stylesheet">
+
+    <style>
+
+        body {
+            font-size: 15px !important;
+        }
+
+            body::-webkit-scrollbar {
+                width: 9px; /* Độ rộng thanh cuộn*/
+                height: 8px;
+            }
+
+        ::-webkit-scrollbar {
+            width: 5px; /* Độ rộng thanh cuộn*/
+            height: 20px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--text-color-component); /* Màu nền của thanh cuộn */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #453a5c; /* Màu của thanh cuộn */
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #716191; /* Màu khi di chuột qua thanh cuộn */
+            }
+    </style>
+
 </head>
 
 <body>
 
- 
+
     @RenderBody()
 
 
     <!-- Footer End -->
     <!-- Back to Top -->
-    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
-    <div id="alertBox" style="max-width: 400px; position:fixed; bottom: 15px; right: 20px; margin: 0px; opacity: 0.95; z-index: 9999999; padding: 14px 18px; font-size: 16px;">
+@*     <a href="#item0" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" style="left: 30px !important; background-color: #ffe500; border-color: #ffe500 !important"><i class="fa fa-arrow-up"></i></a>
+ *@   
+ <div id="alertBox" style="max-width: 400px; position:fixed; bottom: 15px; right: 20px; margin: 0px; opacity: 0.95; z-index: 9999999; padding: 14px 18px; font-size: 16px;">
     </div>
 
     <!-- JavaScript Libraries -->
@@ -55,11 +86,18 @@
 
 
     <!--vue2 development-->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <!--vue2 production-->
-    <!--<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+    @*     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    *@    <!--vue2 production-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js">
+    </script>
 
     <script>
+
+        Vue.config.ignoredElements = [
+            'model-viewer'
+            // other ignored elements if any
+        ];
 
         //check image upload
         function isFileImage(file) {
@@ -71,10 +109,10 @@
         function ShowAlert(html, type) {
             var alertBox = document.querySelector('#alertBox');
             var alert = `<div class="alert alert-${type} alert-dismissible" role="alert">
-                                                                                                                                                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                                                                                                                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 
-                                                                                                                                                ${html}
-                                                                                                                                            </div>`;
+                                                                                                                                                        ${html}
+                                                                                                                                                    </div>`;
 
             if (timeoutAlertID) {
                 alertBox.innerHTML = '';
@@ -89,17 +127,17 @@
 
 
         //link
-        if (window.location.pathname.split('/')[1]) {
-            var arrLinks = Array.from(document.querySelectorAll('.nav-link-head-a'));
-            arrLinks.forEach(e => {
-                if (e.getAttribute('data') == window.location.pathname.split('/')[1]) {
-                    e.classList.add('active');
-                }
-            });
-        }
-        else {
-            document.getElementById('home-link').classList.add('active');
-        }
+        // if (window.location.pathname.split('/')[1]) {
+        //     var arrLinks = Array.from(document.querySelectorAll('.nav-link-head-a'));
+        //     arrLinks.forEach(e => {
+        //         if (e.getAttribute('data') == window.location.pathname.split('/')[1]) {
+        //             e.classList.add('active');
+        //         }
+        //     });
+        // }
+        // else {
+        //     document.getElementById('home-link').classList.add('active');
+        // }
 
         //search
         function SearchEveryWhere() {
@@ -139,8 +177,8 @@
                 number = number + e.amount;
             })
             console.log(carts);
-            document.getElementById("idcartnumber").textContent = number;
-            
+            // document.getElementById("idcartnumber").textContent = number;
+
         }
 
         function AddToCart(productID, amount) {
@@ -148,7 +186,7 @@
             const carts = JSON.parse(cartsJSON) ?? [];
 
             var item = carts.find(e => e.productID == productID);
-            if (item && item != undefined && carts.length>0) {
+            if (item && item != undefined && carts.length > 0) {
                 item.amount = item.amount + amount;
             }
             else {
@@ -182,7 +220,7 @@
         }
 
 
-        RefreshCart();
+        // RefreshCart();
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -4,45 +4,46 @@
 }
 <!-- Single Page Header start -->
 <div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6">Sản phẩm</h1>
+    <h1 class="text-center display-6" style="font-family: cursive; color: #dde6ea !important">NƯỚC GIẢI KHÁT</h1>
     <ol class="breadcrumb justify-content-center mb-0">
-        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-        <li class="breadcrumb-item active text-white">Sản phẩm</li>
+@*         <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item active text-white">Sản phẩm</li> *@
     </ol>
 </div>
 <!-- Single Page Header End -->
 <!-- Fruits Shop Start-->
-<div class="container-fluid fruite py-2" id="appProduct">
+<div class="container-fluid fruite py-2" id="appProduct" style="height: calc(100vh - 184px)">
     <div class="row g-4">
         <div class="col-lg-12">
             <div class="row g-4 mb-3">
                 <div class="col-xl-3">
                     <div class="input-group w-100 mx-auto d-flex">
-                        <input type="search" class="form-control p-2" style="font-size: 16px" placeholder="Nhập tên sản phẩm" aria-describedby="search-icon-1" v-model="nameProduct">
-                        <span v-on:click="GetProduct()" id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                        <input type="search" class="form-control p-2" style="font-size: 16px" placeholder="Nhập tên sản phẩm" aria-describedby="search-icon-1" v-model="nameProduct" v-on:keyup="Search()">
+                        <span v-on:click="Search()" id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
                     </div>
                 </div>
                 <div class="col-9"></div>
 
             </div>
             <div class="row g-4">
-                <div class="col-lg-9 col-sm-8">
-                    <div class="row g-4 justify-content-start">
-                        <div class="col-md-6 col-lg-6 col-xl-4" v-for="item in dataTable">
+                <div class="col-lg-9 col-sm-8 col-7" style="margin: 0px !important">
+                    <div class="row g-4 mt-1 justify-content-start" style="overflow-y: auto; height: calc(100vh - 240px);">
+                        <div class="col-md-6 col-lg-6 col-xl-4" v-for="(item,index) in dataTable">
                             <div class="rounded position-relative fruite-item">
-                                <a v-bind:href="'/product/detail/'+item.productID" class="fruite-img d-block">
-                                    <img v-bind:src="item.posterUrl" class="img-fluid w-100 rounded-top" alt="">
-                                </a>
+                                <model-viewer id="model-viewer" v-bind:src="item.modelUrl" style="width: 100%; height: 400px; background-color: #81c408" alt=""
+                                              ar shadow-intensity="1" camera-controls disable-pan
+                                              disable-tap autoplay auto-rotation shadow-softness="0.1" min-camera-orbit="auto auto 100%"
+                                              max-camera-orbit="auto auto 100%">
+                                </model-viewer>
                                 <div v-if="item.sale>0" class="text-white bg-danger px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">-{{item.sale}}%</div>
                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                    <a v-bind:href="'/product/detail/'+item.productID">
+                                    <a>
                                         <h4>{{item.name}}</h4>
-
                                     </a>
                                     <p>{{item.description}}</p>
                                     <div class="d-flex justify-content-between flex-lg-wrap">
-                                        <p class="text-dark fs-5 fw-bold mb-0">{{Number(item.price - (item.price * item.sale / 100)).toLocaleString('en-US')}}&#8363; / {{item.unit}}</p>
-                                        <a href="javascript:void(0)" v-bind:onclick="'AddToCart('+item.productID+',1)'" class="btn border border-secondary rounded-pill px-3 text-primary ml-md-0 ml-1"><i class="fa fa-shopping-bag me-2 text-primary"></i> Thêm vào giỏ</a>
+                                        <p class="text-dark fw-bold mb-0" style="font-size: 26px">{{Number(item.price - (item.price * item.sale / 100)).toLocaleString('en-US')}}&#8363;</p>
+                                        <a href="javascript:void(0)" v-on:click="AddToCart(item)" class="btn border border-secondary rounded-pill px-3 text-primary ml-md-0 ml-1"><i class="fa fa-shopping-bag me-2 text-primary"></i> Thêm vào giỏ</a>
                                     </div>
                                 </div>
                             </div>
@@ -51,23 +52,22 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-sm-4" style="position:relative;">
-                    <div class="row g-4" style="position:fixed; overflow: auto; height: 700px">
+                <div class="col-lg-3 col-sm-4 col-5" style="position:relative; border-left: 2px rgba(1,1,1,0.4) solid">
+                    <div class="row g-4" style="position:fixed; overflow-y: auto; height: calc(100vh - 240px);">
                         <div class="col-lg-12">
-                            <div class="mb-3">
-                                <h4>Danh mục</h4>
-                                <ul class="list-unstyled fruite-categorie">
-                                    <li v-on:click="GetProduct(0)">
-                                        <div class="d-flex justify-content-between fruite-name">
-                                            <a href="javascript:void(0)"><i class="fas fa-apple-alt me-2"></i>Tất cả</a>
-                                            <span></span>
-                                        </div>
-                                    </li>
+                            <div class="mb-2">
+                                <h5 class="mt-0">Sản phẩm trong giỏ</h5>
+                                <ul class="list-unstyled fruite-categorie" style="overflow-y: auto; max-height: 300px">
 
-                                    <li v-on:click="GetProduct(1)">
-                                        <div class="d-flex justify-content-between fruite-name">
-                                            <a href="javascript:void(0)"><i class="fas fa-apple-alt me-2"></i>12312</a>
-                                            <span>12</span>
+                                    <li v-for="item in Cart" class="mt-1 mb-1">
+                                        <div class="d-flex justify-content-between align-items-center fruite-name">
+                                            <div>
+                                                <img v-bind:src="item.posterUrl" style="height: 100px" />
+                                                <span style="font-size: 30px; font-weight: 600">x{{item.amount}}</span>
+                                            </div>
+                                            <span v-on:click="RemoveItem(item)" role="button">
+                                                <?xml version="1.0" encoding="UTF-8"?><svg width="35" height="35" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24.0033 4L29.2737 9.27038H38.7296V18.7263L44 23.9967L38.7296 29.2737V38.7296H29.2737L24.0033 44L18.7264 38.7296H9.27036V29.2737L4 23.9967L9.27036 18.7263V9.27038H18.7264L24.0033 4Z" fill="none" stroke="#d33c3c" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 24H31" stroke="#d33c3c" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </span>
                                         </div>
                                     </li>
 
@@ -75,41 +75,15 @@
                             </div>
                         </div>
                         <div class="col-lg-12">
-                            <h4 class="mb-3">Sản phẩm khuyến mại</h4>
-
-                            <div class="d-flex align-items-center justify-content-start">
-                                <a href="/product/detail" class="rounded me-4" style="width: 100px; height: 100px;">
-                                    <img src="" class="img-fluid rounded" alt="">
-                                </a>
-                                <div>
-                                    <a href="/product/detail/">
-                                        <h5 class="mb-2"></h5>
-
-                                    </a>
-
-                                    <div class="d-flex mb-2">
-                                        <h6 class="fw-bold me-2">24 &#8363;</h6>
-                                        <h6 class="text-danger text-decoration-line-through">123 &#8363;</h6>
-                                    </div>
-                                </div>
+                            <div class="d-flex" style="justify-content: space-between; align-items: center">
+                                <h5 style="font-weight: 500">Tổng tiền: </h5>
+                                <h4 style="font-weight: 700">{{Number(TotalMoney).toLocaleString('en-US')}}</h4>
                             </div>
 
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="position-relative">
-                                <img src="/img/banner-fruits.jpg" class="img-fluid w-100 rounded" alt="">
-                                <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);">
-                                    <h3 class="text-secondary fw-bold">Món <br> Nhậu <br> Đặc <br> Sản</h3>
-                                </div>
+                            <div style="padding: 10px 10px; margin-top: 5px;">
+                               <button class="btn" style="width: 100%; background-color: #0d6efd; color: #fff; font-size: 20px">Thanh toán</button>
                             </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="position-relative">
-                                <img src="/img/banner-fruits.jpg" class="img-fluid w-100 rounded" alt="">
-                                <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);">
-                                    <h3 class="text-secondary fw-bold">Món <br> Nhậu <br> Đặc <br> Sản</h3>
-                                </div>
-                            </div>
+
                         </div>
 
                     </div>
@@ -124,43 +98,39 @@
         var appProduct = new Vue({
             el: "#appProduct",
             data: {
+                Products: [],
                 dataTable: [],
                 sort: 0,
                 isLoad: true,
-                nameProduct: "@Html.Raw(ViewBag.nameProduct)",
+                nameProduct: "",
                 page: 1,
                 pageSize: 9,
                 totalPages: 1,
-                categoryID: @Html.Raw(ViewBag.categoryID)
-
-                    },
+                Cart: [],
+                TotalMoney: 0
+            },
             methods: {
                 init: async function () {
 
                     await this.GetProduct();
                     this.$forceUpdate();
                 },
-                GetProduct: async function (cID) {
+                GetProduct: async function () {
                     var self = this;
 
-                    if (cID || cID == 0) self.categoryID = cID;
-
-
                     self.isLoad = true;
-                    self.dataTable = [];
+                    self.Products = [];
 
                     $.ajax({
-                        type: "POST",
+                        type: "GET",
                         contentType: "application/json; charset=utf-8",
                         url: "/product/GetProducts",
-                        data: JSON.stringify({
-                            sort: self.sort, nameProduct: self.nameProduct, page: self.page, pageSize: self.pageSize, categoryID: self.categoryID
-                        }),
+                        data: {},
                         success: function (res) {
                             self.isLoad = false;
                             if (res.status == 1) {
-                                self.dataTable = res.data;
-
+                                self.Products = res.data.map(e => { e.amount = 0; return e; });
+                                self.dataTable = self.Products;
                             }
                             else {
                                 ShowAlert(res.message, "danger");
@@ -173,6 +143,47 @@
                     });
 
                 },
+                Search: function(){
+                    var self = this;
+                    self.dataTable = self.Products.filter(e => e.name.indexOf(self.nameProduct) > -1);
+                },
+                AddToCart: function (item) {
+                    var self = this;
+                    var pro = self.Cart.find(e => e.productID == item.productID);
+                    if (pro) {
+                        pro.amount = pro.amount ? pro.amount + 1 : 1;
+                    }
+                    else {
+                        item.amount = 1;
+                        self.Cart.push(item);
+                    }
+                    console.log(self.Cart);
+                                        self.CalcTotal();
+                    this.$forceUpdate();
+
+                },
+                RemoveItem: function(item) {
+                    var self = this;
+                    var pro = self.Cart.find(e => e.productID == item.productID);
+                    if (pro) {
+                        if (pro.amount > 1) {
+                            pro.amount = pro.amount - 1;
+                        }
+                        else {
+                            self.Cart = self.Cart.filter(e => e.productID != pro.productID);
+                        }
+                    }
+                    console.log(self.Cart)
+                    self.CalcTotal();
+                    this.$forceUpdate();
+                },
+                CalcTotal: function(){
+                    var self = this;
+                    self.TotalMoney = (self.Cart && self.Cart.length > 0) ? self.Cart.reduce((accumulator, currentValue) => {
+                        return accumulator + (((currentValue.price - Math.ceil(currentValue.price * currentValue.sale / 100)) * currentValue.amount) );
+                    }, 0) : 0;
+                    this.$forceUpdate();
+                }
 
             },
             mounted() {

@@ -114,7 +114,7 @@ namespace StyleX.Controllers
         {
             return View();
         }
-        [HttpGet]
+        [HttpPost]
         public IActionResult GetProducts()
         {
             try
@@ -136,23 +136,6 @@ namespace StyleX.Controllers
             try
             {
                 string folderName = Guid.NewGuid().ToString();
-
-                string i1 = "";
-                string filePath3 = "";
-
-                if (model.img1 != null)
-                {
-                    i1 = "img1" + Path.GetExtension(model.img1.FileName);
-                    filePath3 = Path.Combine(_environment.WebRootPath, Common.FolderProducts, folderName, i1);
-
-                }
-                string i2 = "";
-                string filePath4 = "";
-                if (model.img2 != null)
-                {
-                    i2 = "img2" + Path.GetExtension(model.img2.FileName);
-                    filePath4 = Path.Combine(_environment.WebRootPath, Common.FolderProducts, folderName, i2);
-                }
 
                 if (model.file != null && model.fileModel != null)
                 {
@@ -183,26 +166,9 @@ namespace StyleX.Controllers
                     {
                         model.fileModel.CopyTo(stream);
                     }
-                    if (model.img1 != null)
-                    {
-                        using (var stream = new FileStream(filePath3, FileMode.Create))
-                        {
-                            model.img1.CopyTo(stream);
-                        }
-                    }
-                    if (model.img2 != null)
-                    {
-                        using (var stream = new FileStream(filePath4, FileMode.Create))
-                        {
-                            model.img2.CopyTo(stream);
-                        }
-                    }
 
 
                     string pathSave = $"/{Common.FolderProducts}/{folderName}/";
-
-                    string fileImg1 = string.IsNullOrEmpty(i1) == true ? "" : pathSave + i1;
-                    string fileImg2 = string.IsNullOrEmpty(i2) == true ? "" : pathSave + i2;
 
 
                     var pro = new Product()
@@ -211,11 +177,10 @@ namespace StyleX.Controllers
                         Status = model.status,
                         PosterUrl = pathSave + fileNameImagePreview,
                         ModelUrl = pathSave + fileNameModel,
-                        PosterDesignUrl1 = fileImg1,
-                        PosterDesignUrl2 = fileImg2,
                         Sale = model.sale,
                         Description = model.description,
                         Price = model.price,
+                        NumberAvailable = model.numberAvailable,
                         CreateAt = DateTime.Now
                     };
                     _dbContext.Products.Add(pro);
@@ -251,7 +216,7 @@ namespace StyleX.Controllers
                 mat.Sale = md.sale;
                 mat.Price = md.price;
                 mat.Description = md.description;
-
+                mat.NumberAvailable = md.numberAvailable;
                 string[] cacPhan = mat.PosterUrl.Split('/');
                 string folderName = cacPhan[cacPhan.Length - 2];
                 string pathSave = $"/{Common.FolderProducts}/{folderName}/";
@@ -276,55 +241,7 @@ namespace StyleX.Controllers
                     }
                     mat.PosterUrl = pathSave + fileName;
                 }
-                if (md.img1 != null && md.img1.Length > 0)
-                {
-
-                    // Xóa file cũ
-                    if (string.IsNullOrEmpty(mat.PosterDesignUrl1) == false)
-                    {
-                        var oldFilePath1 = Path.Combine(_environment.WebRootPath, mat.PosterDesignUrl1.TrimStart('/'));
-
-                        if (System.IO.File.Exists(oldFilePath1))
-                        {
-                            System.IO.File.Delete(oldFilePath1);
-
-                        }
-                    }
-
-                    string fileName = "img1" + Path.GetExtension(md.img1.FileName);
-                    var filePath = Path.Combine(_environment.WebRootPath, Common.FolderProducts, folderName, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        md.img1.CopyTo(stream);
-                    }
-                    mat.PosterDesignUrl1 = pathSave + fileName;
-                }
-                if (md.img2 != null && md.img2.Length > 0)
-                {
-
-                    // Xóa file cũ
-                    if (string.IsNullOrEmpty(mat.PosterDesignUrl2) == false)
-                    {
-                        var oldFilePath1 = Path.Combine(_environment.WebRootPath, mat.PosterDesignUrl2.TrimStart('/'));
-
-                        if (System.IO.File.Exists(oldFilePath1))
-                        {
-                            System.IO.File.Delete(oldFilePath1);
-
-                        }
-                    }
-
-                    string fileName = "img2" + Path.GetExtension(md.img2.FileName);
-                    var filePath = Path.Combine(_environment.WebRootPath, Common.FolderProducts, folderName, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        md.img2.CopyTo(stream);
-                    }
-                    mat.PosterDesignUrl2 = pathSave + fileName;
-                }
-
+               
 
                 _dbContext.SaveChanges();
                 return new OkObjectResult(new { status = 1, message = "Cập nhật sản phẩm thành công." });
@@ -336,6 +253,28 @@ namespace StyleX.Controllers
             }
 
         }
+
+        public IActionResult DeleteProduct([FromBody] IDModel md)
+        {
+            try
+            {
+                var mat = _dbContext.Products.Find(md.ID);
+                if (mat == null)
+                {
+                    return new OkObjectResult(new { status = -1, message = "Sản phẩm này này không còn tồn tại." });
+                }
+                _dbContext.Products.Remove(mat);
+                _dbContext.SaveChanges();
+                return new OkObjectResult(new { status = 1, message = "Xóa sản phẩm thành công." });
+
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new { status = -99, message = e.Message });
+            }
+
+        }
+
 
         #endregion
         #region Order

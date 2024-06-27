@@ -28,16 +28,13 @@ namespace StyleX.DTOs
         public string name { get; set; } = null!;
         public IFormFile fileModel { get; set; } = null!;
         public IFormFile file { get; set; } = null!;
-		public IFormFile? img1 { get; set; }
-		public IFormFile? img2 { get; set; }
 
 		public string description { get; set; } = string.Empty;
         public double price { get; set; }
         public double sale { get; set; }
-        public DateTime? saleEndAt { get; set; }
         public bool status { get; set; }
-        public int categoryID { get; set; }
-        public List<string> productParts { get; set; } = new List<string>();
+        public int numberAvailable { get; set; }
+
 
     }
     public class AddMatProductPart
@@ -54,14 +51,12 @@ namespace StyleX.DTOs
         public int productID { get; set; }
         public string name { get; set; } = null!;
         public IFormFile? file { get; set; }
-		public IFormFile? img1 { get; set; } 
-		public IFormFile? img2 { get; set; } 
 		public string description { get; set; } = string.Empty;
         public double price { get; set; }
         public double sale { get; set; }
-        public DateTime saleEndAt { get; set; }
         public bool status { get; set; }
-        public int categoryID { get; set; }
+        public int numberAvailable { get; set; }
+
     }
     public class SettingProductModel
     {

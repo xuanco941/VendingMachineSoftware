@@ -5,7 +5,6 @@ using StyleX.Util;
 
 namespace StyleX.Controllers
 {
-    [Authorize]
     public class VNPayController : Controller
     {
         public string url = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
@@ -16,7 +15,7 @@ namespace StyleX.Controllers
         {
             return View();
         }
-        [Route("/VNPayAPI/{amount}&{infor}&{orderinfor}")]
+        [Route("/VNPay/{amount}&{infor}&{orderinfor}")]
         public ActionResult Payment(string amount, string infor, string orderinfor)
         {
             string hostName = System.Net.Dns.GetHostName();

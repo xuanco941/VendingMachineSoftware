@@ -10,8 +10,8 @@ namespace StyleX.Models
         public int ProductID { get; set; }
         public string ModelUrl { get; set; } = null!; // url model
         public string PosterUrl { get; set; } = null!; // ảnh hiển thị của product;  
-		public string? PosterDesignUrl1 { get; set; } // ảnh hiển thị của product;  
-		public string? PosterDesignUrl2 { get; set; } // ảnh hiển thị của product;  
+		//public string? PosterDesignUrl1 { get; set; } // ảnh hiển thị của product;  
+		//public string? PosterDesignUrl2 { get; set; } // ảnh hiển thị của product;  
         public int NumberAvailable { get; set; }
 		public string Name { get; set; } = null!;
         public string? Description { get; set; } = string.Empty;
