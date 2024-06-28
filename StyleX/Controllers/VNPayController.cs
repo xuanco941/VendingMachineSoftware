@@ -145,7 +145,7 @@ namespace StyleX.Controllers
                                 order.Status = 1;
                                 _dbContext.SaveChanges();
                             }
-                            return RedirectToAction("Index", "Product");
+                            return RedirectToAction("Index", "Product", new {message= "Thanh toán thành công, chúc quý khách ngon miệng!", type="success"});
                         }
                         else
                         {
@@ -156,7 +156,7 @@ namespace StyleX.Controllers
                                 order.Status = 2;
                                 _dbContext.SaveChanges();
                             }
-                            return RedirectToAction("Index", "Product");
+                            return RedirectToAction("Index", "Product", new { message = "Đã hủy giao dịch!", type = "primary" });
                         }
                     }
                     else
@@ -168,14 +168,14 @@ namespace StyleX.Controllers
                             order.Status = 2;
                             _dbContext.SaveChanges();
                         }
-                        return RedirectToAction("Index", "Product");
+                        return RedirectToAction("Index", "Product", new { message = "Có lỗi xảy ra, thanh toán không thành công!!", type = "danger" });
                     }
                 }
-                return RedirectToAction("Index", "Product");
+                return RedirectToAction("Index", "Product", new { message = "Có lỗi xảy ra, thanh toán không thành công!!", type = "danger" });
             }
             catch
             {
-                return RedirectToAction("Index", "Product");
+                return RedirectToAction("Index", "Product", new { message = "Có lỗi xảy ra, thanh toán không thành công!!", type = "danger" });
             }
 
         }

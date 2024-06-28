@@ -4,7 +4,7 @@
 }
 <!-- Single Page Header start -->
 <div class="container-fluid page-header py-5">
-    <h1 class="text-center display-6" style="font-family: cursive; color: #dde6ea !important">NƯỚC GIẢI KHÁT</h1>
+    <h1 class="text-center display-6" style="font-family: cursive; color: #dde6ea !important; font-size: 45px;">NƯỚC GIẢI KHÁT</h1>
     <ol class="breadcrumb justify-content-center mb-0">
 @*         <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
         <li class="breadcrumb-item active text-white">Sản phẩm</li> *@
@@ -26,7 +26,7 @@
 
             </div>
             <div class="row g-4">
-                <div class="col-lg-9 col-sm-8 col-7" style="margin: 0px !important">
+                <div class="col-xxl-9 col-lg-9 col-sm-8 col-7" style="margin: 0px !important">
                     <div class="row g-4 mt-1 justify-content-start" style="overflow-y: auto; height: calc(100vh - 240px);">
                         <div class="col-md-6 col-lg-6 col-xl-4" v-for="(item,index) in dataTable">
                             <div class="rounded position-relative fruite-item">
@@ -35,7 +35,7 @@
                                               disable-tap autoplay auto-rotation shadow-softness="0.1" min-camera-orbit="auto auto 100%"
                                               max-camera-orbit="auto auto 100%">
                                 </model-viewer>
-                                <div v-if="item.sale>0" class="text-white bg-danger px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">-{{item.sale}}%</div>
+                                <div v-if="item.sale>0" class="text-white bg-danger px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px; font-size: 22px">-{{item.sale}}%</div>
                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                     <a>
                                         <h4>{{item.name}}</h4>
@@ -52,11 +52,11 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-sm-4 col-5" style="position:relative; border-left: 2px rgba(1,1,1,0.4) solid">
+                <div class="col-xxl-3 col-lg-3 col-sm-4 col-5" style="position:relative; border-left: 2px rgba(1,1,1,0.4) solid">
                     <div class="row g-4" style="position:fixed; overflow-y: auto; height: calc(100vh - 240px);">
                         <div class="col-lg-12">
                             <div class="mb-2">
-                                <h5 class="mt-0">Sản phẩm trong giỏ</h5>
+                                <h5 class="mt-0 text-center">Sản phẩm bạn chọn</h5>
                                 <ul class="list-unstyled fruite-categorie" style="overflow-y: auto; max-height: 300px">
 
                                     <li v-for="item in Cart" class="mt-1 mb-1">
@@ -75,17 +75,19 @@
                             </div>
                         </div>
                         <div class="col-lg-12">
-                            <div class="d-flex" style="justify-content: space-between; align-items: center">
-                                <h5 style="font-weight: 500">Tổng tiền: </h5>
-                                <h4 style="font-weight: 700">{{Number(TotalMoney).toLocaleString('en-US')}}</h4>
+                            <div class="d-flex" style="justify-content: space-between; align-items: center; padding-left: 10px; padding-right: 10px">
+                                <h4 style="font-weight: 500">Tổng tiền: </h4>
+                                <h3 style="font-weight: 700">{{Number(TotalMoney).toLocaleString('en-US')}}</h3>
                             </div>
 
-                            <div style="padding: 10px 10px; margin-top: 5px;">
-                               <button v-if="Cart && paymentLoad==false" class="btn" style="width: 100%; background-color: #0d6efd; color: #fff; font-size: 20px" v-on:click="CreateOrder()">Thanh toán</button>
+                            <div style="padding: 10px 10px; margin-top: 20px;">
+                               <button v-if="Cart && paymentLoad==false" class="btn" style="width: 100%; background-color: #0d6efd; color: #fff; font-size: 20px" v-on:click="CreateOrder()">Thanh toán chuyển khoản</button>
                                 <button v-if="Cart && paymentLoad==true" class="btn" style="width: 100%; background-color: #0d6efd; color: #fff; font-size: 20px"><i class="fas fa-spinner fa-pulse"></i></button>
-                               <button v-if="!Cart && paymentLoad==false" class="btn" style="width: 100%; background-color: #0d6efd; color: #fff; font-size: 20px" disabled>Thanh toán</button>
+                               <button v-if="!Cart && paymentLoad==false" class="btn" style="width: 100%; background-color: #0d6efd; color: #fff; font-size: 20px" disabled>Thanh toán chuyển khoản</button>
                             </div>
-
+                             <div style="padding: 10px 10px; margin-top: 3px;">
+                               <button v-if="Cart" class="btn" style="width: 100%; background-color: #c59618; color: #fff; font-size: 20px" v-on:click="CreateOrderTienMat()">Thanh toán tiền mặt</button>
+                            </div>
                         </div>
 
                     </div>
@@ -110,12 +112,30 @@
                 totalPages: 1,
                 Cart: [],
                 TotalMoney: 0,
-                paymentLoad: false
+                paymentLoad: false,
+                responseServer: {
+                    message: '@Html.Raw(ViewBag.message)',
+                    type: '@Html.Raw(ViewBag.type)'
+
+                }
             },
             methods: {
                 init: async function () {
-
+                    var self = this;
                     await this.GetProduct();
+
+                    if(self.responseServer.type){
+                        ShowAlert(self.responseServer.message, self.responseServer.type);
+                                                // Lấy URL hiện tại
+                        const currentUrl = window.location.href;
+
+                        // Tạo URL mới không có chuỗi query
+                        const newUrl = currentUrl.split('?')[0];
+
+                        // Thay đổi URL mà không tải lại trang
+                        window.history.replaceState({}, document.title, newUrl);
+                    }
+
                     this.$forceUpdate();
                 },
                 GetProduct: async function () {
@@ -218,6 +238,9 @@
 
 
                 },
+                CreateOrderTienMat: function () {
+                    ShowAlert("Chức năng này cần có kết nối PLC!", "danger");
+                }
 
 
             },

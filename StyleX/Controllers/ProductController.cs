@@ -14,9 +14,11 @@ namespace StyleX.Controllers
         {
             _dbContext = dbContext;
         }
-        public IActionResult Index()
+        public IActionResult Index(string message, string type)
         {
             ViewBag.pageName = "Sản phẩm";
+            ViewBag.message = message;
+            ViewBag.type = type;
             return View();
         }
 
