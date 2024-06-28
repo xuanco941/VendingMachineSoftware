@@ -302,25 +302,6 @@ namespace StyleX.Controllers
 
             }
         }
-        [HttpPost]
-        public IActionResult GetOrderItems([FromBody] IDModel iDModel)
-        {
-            try
-            {
-                List<OrderProduct>? list = _dbContext.OrderProducts.Include(e => e.Product).Where(u => u.OrderID == iDModel.ID).ToList();
-                if (list == null)
-                {
-                    list = new List<OrderProduct>();
-                }
-                return new OkObjectResult(new { status = 1, message = "success.", data = list });
-
-            }
-            catch (Exception e)
-            {
-                return new OkObjectResult(new { status = -2, message = e.Message, data = "" });
-
-            }
-        }
         #endregion
     }
 }

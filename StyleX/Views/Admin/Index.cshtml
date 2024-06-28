@@ -4,46 +4,6 @@
 }
 
 <!-- Content Row -->
-<div class="row">
-
-    <div class="col-xl-6 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-md font-weight-bold text-success text-uppercase mb-1">
-                            Số đơn hàng thành công trong tháng
-                        </div>
-                        <div class="h4 mb-0 font-weight-bold text-gray-800">@ViewBag.count</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xl-6 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-md font-weight-bold text-success text-uppercase mb-1">
-                            Tổng tiền đơn hàng thành công trong tháng
-                        </div>
-                        <div class="h4 mb-0 font-weight-bold text-gray-800">@ViewBag.money &#8363;</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Content Row -->
 
 <div class="row">
 
@@ -77,16 +37,16 @@
                 </div>
                 <div class="mt-4 text-center small">
                     <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> Đang xử lý
+                        <i class="fas fa-circle text-warning"></i> Chờ thanh toán
                     </span>
                     <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> Đang giao hàng
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-success"></i> Giao hàng thành công
+                        <i class="fas fa-circle text-success"></i> Thành công
                     </span>
                     <span class="mr-2">
                         <i class="fas fa-circle text-danger"></i> Đã hủy
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-primary"></i> Hoàn tiền
                     </span>
                 </div>
             </div>
@@ -126,16 +86,16 @@
                 </div>
                 <div class="mt-4 text-center small">
                     <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> Đang xử lý
+                        <i class="fas fa-circle text-warning"></i> Chờ thanh toán
                     </span>
                     <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> Đang giao hàng
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-success"></i> Giao hàng thành công
+                        <i class="fas fa-circle text-success"></i> Thành công
                     </span>
                     <span class="mr-2">
                         <i class="fas fa-circle text-danger"></i> Đã hủy
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-primary"></i> Hoàn tiền
                     </span>
                 </div>
             </div>
@@ -143,7 +103,7 @@
     </div>
 </div>
 
-@section Scripts{
+@section Scripts {
     <script>
 
         // Area Chart Example
@@ -241,11 +201,11 @@
         var myPieChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ["Đang xử lý", "Đang giao hàng", "Giao hàng thành công", "Đã hủy"],
+                labels: ["Chờ thanh toán", "Thành công", "Đã hủy", "Hoàn tiền"],
                 datasets: [{
                     data: @Html.Raw(ViewBag.value2),
-                    backgroundColor: ['#86c9ef', '#36b9cc', '#1cc88a', '#e74a3b'],
-                    hoverBackgroundColor: ['#2e59d9', '#2c9faf', '#17a673', '#e74a3b'],
+                    backgroundColor: ['#f6c23e', '#1cc88a', '#e74a3b', '#86c9ef'],
+                    hoverBackgroundColor: ['#c59a1b', '#17a673', '#e74a3b', '#3e8db9'],
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
                 }],
             },
@@ -364,11 +324,11 @@
         var myPieChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ["Đang xử lý", "Đang giao hàng", "Giao hàng thành công", "Đã hủy"],
+                labels: ["Chờ thanh toán", "Thành công", "Đã hủy", "Hoàn tiền"],
                 datasets: [{
                     data: @Html.Raw(ViewBag.value4),
-                    backgroundColor: ['#86c9ef', '#36b9cc', '#1cc88a', '#e74a3b'],
-                    hoverBackgroundColor: ['#2e59d9', '#2c9faf', '#17a673', '#e74a3b'],
+                    backgroundColor: ['#f6c23e', '#1cc88a', '#e74a3b', '#86c9ef'],
+                    hoverBackgroundColor: ['#c59a1b', '#17a673', '#e74a3b', '#3e8db9'],
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
                 }],
             },

@@ -10,7 +10,8 @@ namespace StyleX.Models
         public int OrderID { get; set; }
         public double BasePrice { get; set; } //tổng tiền
         public double NetPrice { get; set; } //số tiền phải trả
-        public int Status { get; set; } = 0; //0: đang xử lý, 1 thành công, 2 thất bại, 3 hoàn trả
+        public string? Description { get; set; } = string.Empty;
+        public int Status { get; set; } = 0; //0.chờ thanh toán, 1 thành công, 2 thất bại, 3 hoàn trả
         public DateTime CreateAt { get; set; } = DateTime.Now;
         public DateTime UpdateAt { get; set; } = DateTime.Now;
     }

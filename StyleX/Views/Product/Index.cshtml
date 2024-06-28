@@ -81,7 +81,9 @@
                             </div>
 
                             <div style="padding: 10px 10px; margin-top: 5px;">
-                               <button class="btn" style="width: 100%; background-color: #0d6efd; color: #fff; font-size: 20px">Thanh toán</button>
+                               <button v-if="Cart && paymentLoad==false" class="btn" style="width: 100%; background-color: #0d6efd; color: #fff; font-size: 20px" v-on:click="CreateOrder()">Thanh toán</button>
+                                <button v-if="Cart && paymentLoad==true" class="btn" style="width: 100%; background-color: #0d6efd; color: #fff; font-size: 20px"><i class="fas fa-spinner fa-pulse"></i></button>
+                               <button v-if="!Cart && paymentLoad==false" class="btn" style="width: 100%; background-color: #0d6efd; color: #fff; font-size: 20px" disabled>Thanh toán</button>
                             </div>
 
                         </div>
@@ -107,7 +109,8 @@
                 pageSize: 9,
                 totalPages: 1,
                 Cart: [],
-                TotalMoney: 0
+                TotalMoney: 0,
+                paymentLoad: false
             },
             methods: {
                 init: async function () {
@@ -183,7 +186,39 @@
                         return accumulator + (((currentValue.price - Math.ceil(currentValue.price * currentValue.sale / 100)) * currentValue.amount) );
                     }, 0) : 0;
                     this.$forceUpdate();
-                }
+                },
+                 CreateOrder: async function () {
+                    var self = this;
+                     self.paymentLoad = true;
+
+                    var itemOrders = self.Cart.map(e => {
+                        return { productID: e.productID, amount: e.amount };
+                    })
+                    $.ajax({
+                        url: '/VNPay/Payment',
+                        type: 'POST',
+                        data: JSON.stringify(
+                           itemOrders
+                        ),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (res) {
+                            if (res.status == 1) {
+                                window.location.href = res.data;
+                            }
+                            else {
+                                self.paymentLoad = false;
+                                ShowAlert(res.message, "danger");
+                            }
+                        },
+                        error: function (error) {
+                            self.paymentLoad= false;
+                            ShowAlert(error.responseJSON.message, "danger");
+                        }
+                    });
+
+
+                },
+
 
             },
             mounted() {

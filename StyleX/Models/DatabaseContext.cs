@@ -12,7 +12,6 @@ namespace StyleX.Models
         public DbSet<Account> Accounts { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
         public DbSet<Product> Products { get; set; } = null!;
-        public DbSet<OrderProduct> OrderProducts { get; set; } = null!; 
 
 
 
