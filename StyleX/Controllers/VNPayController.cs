@@ -43,6 +43,7 @@ namespace StyleX.Controllers
 
                 string description = "Thanh toán hóa đơn mua nước giải khát";
                 string descriptionInOrder = string.Empty;
+                string orderDetail = string.Empty;
                 string productNotAvailable = string.Empty;
                 for (int i = 0; i < itemOrders.Count; i++)
                 {
@@ -63,7 +64,8 @@ namespace StyleX.Controllers
                         productNotAvailable = $"Sản phẩm {product.Name} không còn đủ số lượng.";
                         break;
                     }
-                    descriptionInOrder = descriptionInOrder + product.Name + $"({product.Price} - {product.Sale}%)x{itemOrders[i].amount} | ";
+                    descriptionInOrder = descriptionInOrder + product.Name + $"({product.Price}-{product.Sale}%) x{itemOrders[i].amount} | ";
+                    orderDetail = orderDetail + $"{product.ProductID}|{itemOrders[i].amount}-";
 
                     netPrice = netPrice + (product.Price - product.Price * (product.Sale / 100)) * itemOrders[i].amount;
                     basePrice = basePrice + (product.Price) * itemOrders[i].amount;
@@ -82,7 +84,7 @@ namespace StyleX.Controllers
 
 
 
-                Order order = new Order() { Status = 0, CreateAt = DateTime.Now, UpdateAt = DateTime.Now, BasePrice = basePrice, NetPrice = netPrice, Description = descriptionInOrder };
+                Order order = new Order() { Status = 0, CreateAt = DateTime.Now, UpdateAt = DateTime.Now, BasePrice = basePrice, NetPrice = netPrice, Description = descriptionInOrder, OrderDetail = orderDetail };
 
                 _dbContext.Orders.Add(order);
 
@@ -151,8 +153,33 @@ namespace StyleX.Controllers
                         {
                             //Thanh toán không thành công. Mã lỗi: vnp_ResponseCode
                             var order = _dbContext.Orders.Find(orderId);
-                            if (order != null)
+                            if (order != null && order.Status == 0)
                             {
+                                if (!string.IsNullOrEmpty(order.OrderDetail))
+                                {
+                                    string orderDetail = order.OrderDetail ?? "";
+                                    var orderArr = orderDetail.Split("-");
+                                    if (orderArr != null && orderArr.Length > 0)
+                                    {
+                                        foreach (var item in orderArr)
+                                        {
+                                            if (!string.IsNullOrEmpty(item))
+                                            {
+                                                var itemArr = item.Split("|");
+                                                int productIDItem = Convert.ToInt32(itemArr[0]);
+                                                int amountItem = Convert.ToInt32(itemArr[1]);
+
+                                                var productItem = _dbContext.Products.Find(productIDItem);
+                                                if (productItem != null)
+                                                {
+                                                    productItem.NumberAvailable = productItem.NumberAvailable + amountItem;
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+
                                 order.Status = 2;
                                 _dbContext.SaveChanges();
                             }
@@ -163,8 +190,33 @@ namespace StyleX.Controllers
                     {
                         //phản hồi không khớp với chữ ký
                         var order = _dbContext.Orders.Find(orderId);
-                        if (order != null)
+                        if (order != null && order.Status == 0)
                         {
+                            if (!string.IsNullOrEmpty(order.OrderDetail))
+                            {
+                                string orderDetail = order.OrderDetail ?? "";
+                                var orderArr = orderDetail.Split("-");
+                                if (orderArr != null && orderArr.Length > 0)
+                                {
+                                    foreach (var item in orderArr)
+                                    {
+                                        if (!string.IsNullOrEmpty(item))
+                                        {
+                                            var itemArr = item.Split("|");
+                                            int productIDItem = Convert.ToInt32(itemArr[0]);
+                                            int amountItem = Convert.ToInt32(itemArr[1]);
+
+                                            var productItem = _dbContext.Products.Find(productIDItem);
+                                            if (productItem != null)
+                                            {
+                                                productItem.NumberAvailable = productItem.NumberAvailable + amountItem;
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+
                             order.Status = 2;
                             _dbContext.SaveChanges();
                         }

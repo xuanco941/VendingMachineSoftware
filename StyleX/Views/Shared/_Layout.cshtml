@@ -61,15 +61,16 @@
 
 <body>
 
-
-    @RenderBody()
+    <div id="content" style="display: none">
+        @RenderBody()
+    </div>
 
 
     <!-- Footer End -->
     <!-- Back to Top -->
     @*     <a href="#item0" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" style="left: 30px !important; background-color: #ffe500; border-color: #ffe500 !important"><i class="fa fa-arrow-up"></i></a>
     *@
-    <div id="modalLoading" style="display: none;width: 100vw; height: 100vh; position:fixed; opacity: 1; z-index: 99; background-color: #2a29451a; top: 0px; left:0px; justify-content:center; align-items: center">
+    <div id="modalLoading" style="display: flex;width: 100vw; height: 100vh; position:fixed; opacity: 1; z-index: 99; background-color: #2a29451a; top: 0px; left:0px; justify-content:center; align-items: center">
         <i style="font-size: 110px; color: #81c408" class="fas fa-spinner fa-pulse"></i>
         <div id="modalLoadingtext"></div>
     </div>
@@ -98,6 +99,17 @@
     </script>
 
     <script>
+
+
+        window.addEventListener('load', function () {
+            var loading = document.getElementById('modalLoading');
+            var content = document.getElementById('content');
+            loading.style.display = 'none';
+            content.style.display = 'block';
+
+        });
+
+
 
         Vue.config.ignoredElements = [
             'model-viewer'

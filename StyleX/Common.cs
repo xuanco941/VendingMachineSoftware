@@ -2,6 +2,7 @@
 {
     public class Common
     {
+        //acc somee test : idr01578@ilebi.com
         public const string CookieAuthUser = "CookieAuthUser";
         public const string CookieAuthAdmin = "CookieAuthAdmin";
         public const string RoleUser = "user";
