@@ -170,6 +170,14 @@ namespace StyleX.Controllers
 
                     string pathSave = $"/{Common.FolderProducts}/{folderName}/";
 
+                    // Xác định múi giờ của Việt Nam
+                    TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh"); //SE Asia Standard Time
+
+                    // Lấy thời gian hiện tại theo múi giờ của server
+                    DateTime serverTime = DateTime.Now;
+
+                    // Chuyển đổi thời gian server sang múi giờ của Việt Nam
+                    DateTime vietnamTime = TimeZoneInfo.ConvertTime(serverTime, timeZoneInfo);
 
                     var pro = new Product()
                     {
@@ -181,7 +189,7 @@ namespace StyleX.Controllers
                         Description = model.description,
                         Price = model.price,
                         NumberAvailable = model.numberAvailable,
-                        CreateAt = DateTime.Now
+                        CreateAt = vietnamTime
                     };
                     _dbContext.Products.Add(pro);
                     _dbContext.SaveChanges();

@@ -80,17 +80,23 @@ namespace StyleX.Controllers
 
                 descriptionInOrder = descriptionInOrder.TrimEnd(' ');
                 descriptionInOrder = descriptionInOrder.TrimEnd('|');
+                orderDetail = orderDetail.TrimEnd('-');
 
 
+                // Xác định múi giờ của Việt Nam
+                TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh"); //SE Asia Standard Time
 
+                // Lấy thời gian hiện tại theo múi giờ của server
+                DateTime serverTime = DateTime.Now;
 
-                Order order = new Order() { Status = 0, CreateAt = DateTime.Now, UpdateAt = DateTime.Now, BasePrice = basePrice, NetPrice = netPrice, Description = descriptionInOrder, OrderDetail = orderDetail };
+                // Chuyển đổi thời gian server sang múi giờ của Việt Nam
+                DateTime vietnamTime = TimeZoneInfo.ConvertTime(serverTime, timeZoneInfo);
+
+                Order order = new Order() { Status = 0, CreateAt = vietnamTime, UpdateAt = vietnamTime, BasePrice = basePrice, NetPrice = netPrice, Description = descriptionInOrder, OrderDetail = orderDetail };
 
                 _dbContext.Orders.Add(order);
 
                 _dbContext.SaveChanges();
-
-
 
 
                 pay.AddRequestData("vnp_Version", "2.1.0"); //Phiên bản api mà merchant kết nối. Phiên bản hiện tại là 2.1.0
@@ -98,7 +104,7 @@ namespace StyleX.Controllers
                 pay.AddRequestData("vnp_TmnCode", tmnCode); //Mã website của merchant trên hệ thống của VNPAY (khi đăng ký tài khoản sẽ có trong mail VNPAY gửi về)
                 pay.AddRequestData("vnp_Amount", (netPrice * 100).ToString()); //số tiền cần thanh toán, công thức: số tiền * 100 - ví dụ 10.000 (mười nghìn đồng) --> 1000000
                 pay.AddRequestData("vnp_BankCode", ""); //Mã Ngân hàng thanh toán (tham khảo: https://sandbox.vnpayment.vn/apis/danh-sach-ngan-hang/), có thể để trống, người dùng có thể chọn trên cổng thanh toán VNPAY
-                pay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss")); //ngày thanh toán theo định dạng yyyyMMddHHmmss
+                pay.AddRequestData("vnp_CreateDate", vietnamTime.ToString("yyyyMMddHHmmss")); //ngày thanh toán theo định dạng yyyyMMddHHmmss
                 pay.AddRequestData("vnp_CurrCode", "VND"); //Đơn vị tiền tệ sử dụng thanh toán. Hiện tại chỉ hỗ trợ VND
                 pay.AddRequestData("vnp_IpAddr", clientIPAddress ?? "127.0.0.1"); //Địa chỉ IP của khách hàng thực hiện giao dịch
                 pay.AddRequestData("vnp_Locale", "vn"); //Ngôn ngữ giao diện hiển thị - Tiếng Việt (vn), Tiếng Anh (en)
