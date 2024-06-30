@@ -1,17 +1,30 @@
 ﻿using MyApplication;
+using System;
+using System.Security.Policy;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace VendingMachine
 {
-    internal static class Program
+    public partial class Form1 : Form
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        public Form1()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
+
+        }
+
+        private void webView21_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
+        {
+            webView21.CoreWebView2.Settings.AreDevToolsEnabled = false;
+            webView21.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            webView21.Source = new Uri("https://automaticpayment.somee.com/");
 
             Task.Run(() =>
             {
@@ -37,9 +50,6 @@ namespace VendingMachine
 
             });
 
-
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
         }
     }
 }

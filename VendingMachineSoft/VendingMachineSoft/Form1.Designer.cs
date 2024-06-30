@@ -1,4 +1,7 @@
-﻿namespace VendingMachine
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace VendingMachine
 {
     partial class Form1
     {
@@ -53,6 +56,7 @@
             Controls.Add(webView21);
             Name = "Form1";
             Text = "Form1";
+            Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)webView21).EndInit();
             ResumeLayout(false);
         }
